@@ -99,9 +99,7 @@ class _SocialMediaScreenState extends State<SocialMediaScreen>
       //TODO refresh Point
     }
 
-    if (scrollController.offset < getPaddingSreenTopHeight()) {
-      print('denemeeee');
-    }
+    if (scrollController.offset < getPaddingSreenTopHeight()) {}
   }
 
   void dataUpdate() {

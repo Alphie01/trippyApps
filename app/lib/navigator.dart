@@ -8,6 +8,7 @@ import 'package:app/screens/enterence/login/login.dart';
 import 'package:app/screens/enterence/openingPage/welcome.dart';
 import 'package:app/screens/enterence/register/register.dart';
 import 'package:app/screens/essencials/drawers.dart';
+import 'package:app/screens/searchScreen/searchScreen.dart';
 import 'package:app/screens/socialMedia/socailMediaPage.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -106,7 +107,31 @@ class _AppNavigatorScreenState extends State<AppNavigatorScreen>
           });
           break;
 
-        // map
+        //search
+        case 20:
+          setState(() {
+            bottombar = true;
+            tabBody = SearchScreen(
+              animationController: animationController,
+              updatePage: _updateBar,
+              scaffoldKey: scaffoldKey,
+            );
+          });
+          break;
+
+        //add newPost pageId : 40
+        case 40:
+          setState(() {
+            bottombar = true;
+            tabBody = SearchScreen(
+              animationController: animationController,
+              updatePage: _updateBar,
+              scaffoldKey: scaffoldKey,
+            );
+          });
+          break;
+
+        // map pageId : 60
 
         //login - Register - Welcome Pages
         case 90:
@@ -187,7 +212,7 @@ class _AppNavigatorScreenState extends State<AppNavigatorScreen>
               drawer: Drawer(
                 backgroundColor: AppTheme.background,
                 child: Drawers(
-                  darkTheme : darkTheme,
+                  darkTheme: darkTheme,
                   updatePage: _updateBar,
                 ),
               ),
@@ -195,12 +220,12 @@ class _AppNavigatorScreenState extends State<AppNavigatorScreen>
                 index: currIndex,
                 backgroundColor: AppTheme.firstColor.withOpacity(.3),
                 color: Colors.white,
-                items: <Widget>[
+                items: const <Widget>[
                   FaIcon(FontAwesomeIcons.home),
                   FaIcon(FontAwesomeIcons.search),
+                  FaIcon(FontAwesomeIcons.plus),
                   FaIcon(FontAwesomeIcons.map),
-                  FaIcon(FontAwesomeIcons.heart),
-                  FaIcon(FontAwesomeIcons.user),
+                  FaIcon(FontAwesomeIcons.shoppingBag),
                 ],
                 onTap: (index) {
                   switch (index) {
@@ -208,13 +233,13 @@ class _AppNavigatorScreenState extends State<AppNavigatorScreen>
                       _updateBar(pageId: 0);
                       break;
                     case 1:
-                      _updateBar(pageId: 1);
+                      _updateBar(pageId: 20);
                       break;
                     case 2:
-                      _updateBar(pageId: 3);
+                      _updateBar(pageId: 40);
                       break;
                     case 3:
-                      _updateBar(pageId: 80);
+                      _updateBar(pageId: 60);
                       break;
                     case 4:
                       _updateBar(pageId: 120);
