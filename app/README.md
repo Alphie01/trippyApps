@@ -13,4 +13,5 @@ Bu rehberlik uygulaması, seyahat severler için benzersiz bir deneyim sunarak, 
 ## Yakın Gelecek Apiler (Başvuru Gereken APILER)
 
 https://www.partners.skyscanner.net/contact/travel-api //uçak bileti API (Yayınlanmadan vermiyorlar)
+
 https://moovit.com/maas-solutions/transit-apis/ //moovit Transportation API 
