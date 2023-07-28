@@ -1,16 +1,17 @@
-import 'package:app/constants/sharedPreferencesKeynames.dart';
-import 'package:app/constants/sizeConfig.dart';
-import 'package:app/constants/theme.dart';
-import 'package:app/core/sharedPreferences.dart';
-import 'package:app/globals/users.dart';
-import 'package:app/widgets/app_text.dart';
+import 'package:TrippyAlpapp/constants/sharedPreferencesKeynames.dart';
+import 'package:TrippyAlpapp/constants/sizeConfig.dart';
+import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/core/sharedPreferences.dart';
+import 'package:TrippyAlpapp/globals/users.dart';
+import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Drawers extends StatefulWidget {
   const Drawers({super.key, required this.updatePage, required this.darkTheme});
-  final Function updatePage;
+
   final bool darkTheme;
+  final Function updatePage;
 
   @override
   State<Drawers> createState() => _DrawersState();
@@ -37,7 +38,7 @@ class _DrawersState extends State<Drawers> {
       AppTheme.setBrightTheme();
     }
     Future.delayed(defaultDuration, () {
-      widget.updatePage(pageId:94);
+      widget.updatePage(pageId: 94);
     });
   }
 
@@ -45,7 +46,7 @@ class _DrawersState extends State<Drawers> {
   Widget build(BuildContext context) {
     return ListView(
       // Important: Remove any padding from the ListView.
-      padding: EdgeInsets.zero,
+      padding: paddingZero,
       children: [
         Container(
           padding:
@@ -193,7 +194,10 @@ class _DrawersState extends State<Drawers> {
               ),
             ],
           ),
-          onTap: () {},
+          onTap: () {
+            SharedPref.removeStrValue(userToken);
+            widget.updatePage(pageId: 92);
+          },
         ),
       ],
     );

@@ -1,6 +1,6 @@
-import 'package:app/constants/theme.dart';
-import 'package:app/screens/socialMedia/component/classes/post.dart';
-import 'package:app/widgets/app_text.dart';
+import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/screens/socialMedia/component/classes/post.dart';
+import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -17,6 +17,7 @@ class PostUI extends StatelessWidget {
           color: AppTheme.firstColor.withOpacity(.1),
           borderRadius: BorderRadius.circular(15)),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -57,6 +58,10 @@ class PostUI extends StatelessWidget {
             margin: EdgeInsets.symmetric(vertical: 25),
             height: 250,
             decoration: BoxDecoration(color: Colors.amber),
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: 25),
+            child: AppText(text: postClasses.postString!),
           ),
           Container(
             width: double.maxFinite,

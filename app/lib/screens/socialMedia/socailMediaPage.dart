@@ -1,12 +1,12 @@
-import 'package:app/constants/sizeConfig.dart';
-/* import 'package:app/constants/stringConstans.dart'; */
-import 'package:app/constants/theme.dart';
-import 'package:app/globals/users.dart';
-import 'package:app/screens/socialMedia/component/classes/post.dart';
-import 'package:app/screens/socialMedia/component/classes/story.dart';
-import 'package:app/screens/socialMedia/component/posts.dart';
-import 'package:app/screens/socialMedia/component/storyLine.dart';
-import 'package:app/widgets/app_text.dart';
+import 'package:TrippyAlpapp/constants/sizeConfig.dart';
+/* import 'package:TrippyAlpapp/constants/stringConstans.dart'; */
+import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/globals/users.dart';
+import 'package:TrippyAlpapp/screens/socialMedia/component/classes/post.dart';
+import 'package:TrippyAlpapp/screens/socialMedia/component/classes/story.dart';
+import 'package:TrippyAlpapp/screens/socialMedia/component/posts.dart';
+import 'package:TrippyAlpapp/screens/socialMedia/component/storyLine.dart';
+import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 

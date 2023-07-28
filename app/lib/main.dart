@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:app/navigator.dart';
+import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/navigator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,6 +34,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
     return MaterialApp(
       title: 'Flutter UI Templates',
       debugShowCheckedModeBanner: false,
+      color: AppTheme.firstColor,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         platform: TargetPlatform.iOS,

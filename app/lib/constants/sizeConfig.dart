@@ -39,3 +39,5 @@ double getProportionateScreenWidth(double inputWidth) {
 }
 
 double paddingHorizontal = 25.0;
+
+EdgeInsets paddingZero = EdgeInsets.zero;

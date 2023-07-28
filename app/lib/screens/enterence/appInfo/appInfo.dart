@@ -1,8 +1,9 @@
-import 'package:app/constants/sharedPreferencesKeynames.dart';
-import 'package:app/constants/theme.dart';
-import 'package:app/core/sharedPreferences.dart';
-import 'package:app/widgets/app_large_text.dart';
-import 'package:app/widgets/app_text.dart';
+import 'package:TrippyAlpapp/constants/sharedPreferencesKeynames.dart';
+import 'package:TrippyAlpapp/constants/sizeConfig.dart';
+import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/core/sharedPreferences.dart';
+import 'package:TrippyAlpapp/widgets/app_large_text.dart';
+import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -171,7 +172,7 @@ class _TripleWidgetState extends State<TripleWidget> {
                 child: ListView.builder(
                   itemCount: widget.totalCount,
                   shrinkWrap: true,
-                  padding: EdgeInsets.zero,
+                  padding: paddingZero,
                   physics: NeverScrollableScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {

@@ -1,4 +1,4 @@
-import 'package:app/functions/color.dart';
+import 'package:TrippyAlpapp/functions/color.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {

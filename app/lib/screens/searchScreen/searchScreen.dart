@@ -1,53 +1,107 @@
-import 'package:app/constants/sizeConfig.dart';
-/* import 'package:app/constants/stringConstans.dart'; */
-import 'package:app/constants/theme.dart';
-import 'package:app/globals/users.dart';
-import 'package:app/screens/socialMedia/component/classes/post.dart';
-import 'package:app/screens/socialMedia/component/classes/story.dart';
-import 'package:app/widgets/app_text.dart';
+import 'dart:ui';
+import 'package:TrippyAlpapp/constants/sizeConfig.dart';
+import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/globals/users.dart';
+import 'package:TrippyAlpapp/screens/searchScreen/components/classes/categories.dart';
+import 'package:TrippyAlpapp/screens/socialMedia/component/classes/post.dart';
+import 'package:TrippyAlpapp/widgets/app_large_text.dart';
+import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatefulWidget {
-  final Function? updatePage;
   const SearchScreen(
       {Key? key,
       this.animationController,
       this.updatePage,
       required this.scaffoldKey})
       : super(key: key);
+
   final AnimationController? animationController;
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final Function? updatePage;
+
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen>
     with TickerProviderStateMixin {
-  Animation<double>? topBarAnimation;
+  List<SearchCategory> categories = [
+    SearchCategory(
+        categoryName: 'Tümü',
+        categoryAssetImg: AssetImage('assets/search/search_1.jpg')),
+    SearchCategory(
+        categoryName: 'Keşfet',
+        categoryAssetImg: AssetImage('assets/search/search_2.jpg')),
+    SearchCategory(
+        categoryName: 'Şehirler',
+        categoryAssetImg: AssetImage('assets/search/search_3.jpg')),
+    SearchCategory(
+        categoryName: 'Seyahat Rotaları',
+        categoryAssetImg: AssetImage('assets/search/search_4.jpg')),
+    SearchCategory(
+        categoryName: 'Restorant',
+        categoryAssetImg: AssetImage('assets/search/search_5.jpg')),
+    SearchCategory(
+        categoryName: 'Bar',
+        categoryAssetImg: AssetImage('assets/search/search_7.jpg')),
+    SearchCategory(
+        categoryName: 'Gece Hayatı',
+        categoryAssetImg: AssetImage('assets/search/search_8.jpg')),
+    SearchCategory(
+        categoryName: 'Sağlık',
+        categoryAssetImg: AssetImage('assets/search/search_9.jpg')),
+    SearchCategory(
+        categoryName: 'Alışveriş',
+        categoryAssetImg: AssetImage('assets/search/search_6.jpg')),
+  ];
 
-  final ScrollController scrollController = ScrollController();
-  double topBarOpacity = 0.0;
-
+  bool isSelectedCategory = false;
+  bool isTopRefresh = false, refreshData = false;
   PostClasses postClasses = PostClasses(
       postBelongs: User.userProfile, postString: 'deneme String Caption');
 
-  bool isTopRefresh = false, refreshData = false;
-  List categories = [
-    'Tümü',
-    'Kişiler',
-    'Şehirler',
-    'Seyahat Rotaları',
-    'Mekanlar',
-    'Alışveriş',
-  ];
+  final ScrollController scrollController = ScrollController();
+  bool showRecentSearchs = false, showFilters = false;
+  Animation<double>? topBarAnimation;
+  double topBarOpacity = 0.0, searchBarOpacity = .6;
+
+  TextEditingController _editingController = TextEditingController();
+  FocusNode _focusNode = FocusNode();
+  AnimationController? filterAnimation;
+  Animation<double>? filterOpacity, filterTransform;
+
+  Widget tabBody = Container();
 
   @override
   void initState() {
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        setState(() {
+          searchBarOpacity = 1.0;
+          showRecentSearchs = true;
+        });
+      } else {
+        setState(() {
+          searchBarOpacity = .6;
+          showRecentSearchs = false;
+        });
+      }
+    });
+
+    setSearchWidget(0);
     topBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
             parent: widget.animationController!,
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
+
+    filterAnimation =
+        AnimationController(vsync: this, duration: defaultDuration);
+    filterOpacity =
+        Tween<double>(begin: 0.0, end: 1.0).animate(filterAnimation!);
+    filterTransform =
+        Tween<double>(begin: 150.0, end: 0.0).animate(filterAnimation!);
 
     super.initState();
     widget.animationController!.forward();
@@ -74,8 +128,27 @@ class _SearchScreenState extends State<SearchScreen>
       //TODO refresh Point
     }
 
-    if (scrollController.offset < getPaddingSreenTopHeight()) {
-      
+    if (scrollController.offset < getPaddingSreenTopHeight()) {}
+  }
+
+  void setSearchWidget(int widgetId) {
+    switch (widgetId) {
+      case 0:
+        setState(() {
+          tabBody = ListView(
+            shrinkWrap: true,
+            padding: paddingZero,
+            children: [
+              Container(
+                margin: EdgeInsets.only(top: paddingHorizontal),
+                child: AppText(text: 'Tümü Arama'),
+              )
+            ],
+          );
+        });
+        break;
+
+      default:
     }
   }
 
@@ -98,287 +171,6 @@ class _SearchScreenState extends State<SearchScreen>
   Future<bool> getData() async {
     await Future<dynamic>.delayed(const Duration(milliseconds: 50));
     return true;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: AppTheme.background,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: GestureDetector(
-          onPanUpdate: (details) {},
-          child: Stack(
-            children: <Widget>[
-              AnimatedBuilder(
-                animation: widget.animationController!,
-                builder: (BuildContext context, Widget? child) {
-                  return FadeTransition(
-                    opacity: topBarAnimation!,
-                    child: Transform(
-                      transform: Matrix4.translationValues(
-                          0.0, 30 * (1.0 - topBarAnimation!.value), 0.0),
-                      child: Container(
-                        width: double.maxFinite,
-                        height: MediaQuery.of(context).size.height,
-                        padding: EdgeInsets.only(
-                          top: getPaddingSreenTopHeight() + 10,
-                        ),
-                        child: ListView(
-                          shrinkWrap: true,
-                          padding:
-                              EdgeInsets.only(top: getPaddingSreenTopHeight()),
-                          controller: scrollController,
-                          children: [
-                            isTopRefresh
-                                ? Container(
-                                    width: double.maxFinite,
-                                    padding: EdgeInsets.symmetric(vertical: 15),
-                                    alignment: Alignment.center,
-                                    child: Container(
-                                      height: 50,
-                                      width: 50,
-                                      child: CircularProgressIndicator(
-                                        color: AppTheme.firstColor,
-                                      ),
-                                    ),
-                                  )
-                                : Container(),
-                            Container(
-                              width: double.maxFinite,
-                              height: 100,
-                              child: ListView.builder(
-                                padding: EdgeInsets.zero,
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: categories.length,
-                                itemBuilder: (ctx, index) {
-                                  return Container(
-                                    height: 100,
-                                    margin: index == 0
-                                        ? EdgeInsets.symmetric(
-                                            horizontal: paddingHorizontal)
-                                        : EdgeInsets.only(
-                                            right: paddingHorizontal),
-                                    alignment: Alignment.center,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: paddingHorizontal * 2),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        color: AppTheme.firstColor
-                                            .withOpacity(.1)),
-                                    child:
-                                        AppText(text: '${categories[index]}'),
-                                  );
-                                },
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 15.0),
-                              child: ListView.builder(
-                                itemCount: 6,
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.zero,
-                                itemBuilder: (context, ind) {
-                                  if (ind % 2 == 0) {
-                                    return Row(
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                .66,
-                                            color: Colors.amber,
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .33,
-                                                color: Colors.pink,
-                                              ),
-                                              Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .33,
-                                                color: Colors.green,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .33,
-                                                color: Colors.blue,
-                                              ),
-                                              Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .33,
-                                                color: Colors.grey,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  } else {
-                                    return Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .33,
-                                                color: Colors.orange,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .33,
-                                                color: Colors.greenAccent,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .33,
-                                                color: Colors.pinkAccent,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .33,
-                                                color: Colors.pink,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .33,
-                                                color: Colors.green,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .33,
-                                                color: Colors.orange,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Column(
-                                                children: [
-                                                  Container(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            .33,
-                                                    color: Colors.pink,
-                                                  ),
-                                                  Container(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            .33,
-                                                    color: Colors.green,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Column(
-                                                children: [
-                                                  Container(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            .33,
-                                                    color: Colors.blue,
-                                                  ),
-                                                  Container(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            .33,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .66,
-                                                color: Colors.amber,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    );
-                                  }
-                                },
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              getAppBarUI(),
-              SizedBox(
-                height: MediaQuery.of(context).padding.bottom,
-              )
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   Widget getAppBarUI() {
@@ -439,9 +231,13 @@ class _SearchScreenState extends State<SearchScreen>
                         ],
                       ),
                       GestureDetector(
-                        /* onTap: () {
-                          SharedPref.addBoolToSF(darkOrLightMode, false);
-                        }, */
+                        onTap: () {
+                          filterAnimation!.reverse().then((value) {
+                            setState(() {
+                              showFilters = false;
+                            });
+                          });
+                        },
                         child: FaIcon(
                           FontAwesomeIcons.search,
                           color: AppTheme.textColor,
@@ -456,6 +252,419 @@ class _SearchScreenState extends State<SearchScreen>
           },
         )
       ],
+    );
+  }
+
+  void _handleTapOutside(BuildContext context) {
+    // TextField focusunu kaldır.
+    _focusNode.unfocus();
+    filterAnimation!.reverse();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: AppTheme.background,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: GestureDetector(
+          onPanUpdate: (details) {},
+          child: Stack(
+            alignment: Alignment.bottomLeft,
+            children: <Widget>[
+              AnimatedBuilder(
+                animation: widget.animationController!,
+                builder: (BuildContext context, Widget? child) {
+                  return FadeTransition(
+                    opacity: topBarAnimation!,
+                    child: Transform(
+                      transform: Matrix4.translationValues(
+                          0.0, 30 * (1.0 - topBarAnimation!.value), 0.0),
+                      child: Container(
+                        width: double.maxFinite,
+                        height: MediaQuery.of(context).size.height,
+                        padding: EdgeInsets.only(
+                          top: getPaddingSreenTopHeight() + 10,
+                        ),
+                        child: ListView(
+                          shrinkWrap: true,
+                          padding:
+                              EdgeInsets.only(top: getPaddingSreenTopHeight()),
+                          controller: scrollController,
+                          children: [
+                            isTopRefresh
+                                ? Container(
+                                    width: double.maxFinite,
+                                    padding: EdgeInsets.symmetric(vertical: 15),
+                                    alignment: Alignment.center,
+                                    child: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: CircularProgressIndicator(
+                                        color: AppTheme.firstColor,
+                                      ),
+                                    ),
+                                  )
+                                : Container(),
+                            GestureDetector(
+                              onTap: () {
+                                _handleTapOutside(context);
+                              },
+                              child: isSelectedCategory
+                                  ? Container()
+                                  : Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: paddingHorizontal),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          AppLargeText(
+                                              text:
+                                                  'Hangi Kategoride Aramak İstiyorsunuz?'),
+                                          Container(
+                                            margin: EdgeInsets.only(
+                                                top: paddingHorizontal),
+                                            decoration: BoxDecoration(
+                                              color: AppTheme.background,
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              border: Border.all(
+                                                  color: AppTheme.firstColor
+                                                      .withOpacity(
+                                                          searchBarOpacity)),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: AppTheme.firstColor
+                                                      .withOpacity(.3),
+                                                  blurRadius:
+                                                      5.0, // soften the shadow
+                                                  spreadRadius:
+                                                      0.0, //extend the shadow
+                                                  offset: Offset(
+                                                    0.0,
+                                                    8.0, // Move to bottom 5 Vertically
+                                                  ), // changes position of shadow
+                                                ),
+                                              ],
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 9,
+                                                  child: TextField(
+                                                    controller:
+                                                        _editingController,
+                                                    onChanged: (news) {},
+                                                    focusNode: _focusNode,
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        color:
+                                                            AppTheme.textColor),
+                                                    cursorColor:
+                                                        AppTheme.textColor,
+                                                    decoration: InputDecoration(
+                                                      hintText:
+                                                          "Aramak için ....",
+                                                      hintStyle: TextStyle(
+                                                          color: Colors
+                                                              .grey.shade500),
+                                                      focusedBorder:UnderlineInputBorder(borderSide: BorderSide.none) ,
+                                                      fillColor:
+                                                          AppTheme.background,
+                                                      filled: true,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                    child: GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      showFilters = true;
+                                                    });
+                                                    filterAnimation!.forward();
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: FaIcon(
+                                                      FontAwesomeIcons.filter,
+                                                      color: AppTheme.textColor,
+                                                      size: 22,
+                                                    ),
+                                                  ),
+                                                ))
+                                              ],
+                                            ),
+                                          ),
+                                          if (showRecentSearchs)
+                                            recentSearchs()
+                                          else
+                                            tabBody
+                                        ],
+                                      ),
+                                    ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+              showFilters
+                  ? AnimatedBuilder(
+                      animation: filterAnimation!,
+                      builder: (context, child) {
+                        return Transform.translate(
+                          offset: Offset(0, filterTransform!.value),
+                          child: Opacity(
+                            opacity: filterOpacity!.value,
+                            child: Container(
+                              alignment: Alignment.bottomLeft,
+                              width: double.maxFinite,
+                              margin: EdgeInsets.only(
+                                top: getPaddingSreenTopHeight() * 2,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  GetSearchCategoriesWidget(
+                                      categories: categories),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                  : Container(),
+              getAppBarUI(),
+              SizedBox(
+                height: MediaQuery.of(context).padding.bottom,
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Column recentSearchs() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.only(top: paddingHorizontal),
+          child: AppText(
+            text: 'Daha Önce Aradıkların',
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        ListView.builder(
+          itemCount: 5,
+          physics: NeverScrollableScrollPhysics(),
+          padding: paddingZero,
+          shrinkWrap: true,
+          itemBuilder: (ctx, index) {
+            return Container(
+              padding: EdgeInsets.symmetric(vertical: 15),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      FaIcon(
+                        FontAwesomeIcons.rotate,
+                        color: AppTheme.textColor,
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 15),
+                        child: AppText(text: 'searced_${index}'),
+                      )
+                    ],
+                  ),
+                  FaIcon(
+                    FontAwesomeIcons.xmark,
+                    color: AppTheme.textColor,
+                  )
+                ],
+              ),
+            );
+          },
+        )
+      ],
+    );
+  }
+}
+
+class GetSearchCategoriesWidget extends StatelessWidget {
+  const GetSearchCategoriesWidget({
+    super.key,
+    required this.categories,
+  });
+
+  final List<SearchCategory> categories;
+
+  @override
+  Widget build(BuildContext context) {
+    int index = 0;
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      decoration: BoxDecoration(
+          color: AppTheme.firstColor.withOpacity(.3),
+          borderRadius: BorderRadius.circular(15)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: SearchSelectBox(
+                  categories: categories[index],
+                  height: 300,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    SearchSelectBox(
+                      categories: categories[index + 1],
+                      height: 150,
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(15)),
+                    ),
+                    SearchSelectBox(
+                      categories: categories[index + 2],
+                      height: 150,
+                      borderRadius:
+                          BorderRadius.vertical(bottom: Radius.circular(15)),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: SearchSelectBox(
+                    categories: categories[index + 3],
+                    height: MediaQuery.of(context).size.width / 3 - 15,
+                    borderRadius: BorderRadius.circular(15),
+                    textSize: 16,
+                  ),
+                ),
+                Expanded(
+                  child: SearchSelectBox(
+                    categories: categories[index + 4],
+                    height: MediaQuery.of(context).size.width / 3 - 15,
+                    borderRadius: BorderRadius.circular(15),
+                    textSize: 16,
+                  ),
+                ),
+                Expanded(
+                  child: SearchSelectBox(
+                    categories: categories[index + 5],
+                    height: MediaQuery.of(context).size.width / 3 - 15,
+                    borderRadius: BorderRadius.circular(15),
+                    textSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: SearchSelectBox(
+                    categories: categories[index + 6],
+                    height: MediaQuery.of(context).size.width / 3 - 15,
+                    borderRadius: BorderRadius.circular(15),
+                    textSize: 16,
+                  ),
+                ),
+                Expanded(
+                  child: SearchSelectBox(
+                    categories: categories[index + 7],
+                    height: MediaQuery.of(context).size.width / 3 - 15,
+                    borderRadius: BorderRadius.circular(15),
+                    textSize: 16,
+                  ),
+                ),
+                Expanded(
+                  child: SearchSelectBox(
+                    categories: categories[index + 8],
+                    height: MediaQuery.of(context).size.width / 3 - 15,
+                    borderRadius: BorderRadius.circular(15),
+                    textSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class SearchSelectBox extends StatelessWidget {
+  const SearchSelectBox({
+    super.key,
+    required this.categories,
+    required this.height,
+    required this.borderRadius,
+    this.textSize = 22,
+  });
+
+  final SearchCategory categories;
+  final double height;
+  final double textSize;
+  final BorderRadius borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 3.5),
+      height: height,
+      decoration: BoxDecoration(
+          color: Colors.transparent,
+          image: DecorationImage(
+            image: categories.categoryAssetImg,
+            fit: BoxFit.cover,
+          ),
+          borderRadius: borderRadius),
+      child: Container(
+        color: AppBlackTheme.background.withOpacity(.5),
+        child: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(
+              sigmaX: 0,
+              sigmaY: 0,
+            ),
+            child: Container(
+              alignment: Alignment.bottomRight,
+              padding: EdgeInsets.all(15),
+              child: AppText(
+                align: TextAlign.right,
+                text: categories.categoryName,
+                color: AppBlackTheme.textColor,
+                size: textSize,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

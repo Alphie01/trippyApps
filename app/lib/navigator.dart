@@ -1,19 +1,21 @@
-import 'package:app/constants/sharedPreferencesKeynames.dart';
-import 'package:app/constants/theme.dart';
-import 'package:app/core/sharedPreferences.dart';
-import 'package:app/functions/lastScreens.dart';
-import 'package:app/screens/enterence/appInfo/appInfo.dart';
-import 'package:app/screens/enterence/loading/loading.dart';
-import 'package:app/screens/enterence/login/login.dart';
-import 'package:app/screens/enterence/openingPage/welcome.dart';
-import 'package:app/screens/enterence/register/register.dart';
-import 'package:app/screens/essencials/drawers.dart';
-import 'package:app/screens/searchScreen/searchScreen.dart';
-import 'package:app/screens/socialMedia/socailMediaPage.dart';
+import 'package:TrippyAlpapp/constants/sharedPreferencesKeynames.dart';
+import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/core/sharedPreferences.dart';
+import 'package:TrippyAlpapp/functions/lastScreens.dart';
+import 'package:TrippyAlpapp/screens/createNewPost/createNew.dart';
+import 'package:TrippyAlpapp/screens/enterence/appInfo/appInfo.dart';
+import 'package:TrippyAlpapp/screens/enterence/loading/loading.dart';
+import 'package:TrippyAlpapp/screens/enterence/login/login.dart';
+import 'package:TrippyAlpapp/screens/enterence/openingPage/welcome.dart';
+import 'package:TrippyAlpapp/screens/enterence/register/register.dart';
+import 'package:TrippyAlpapp/screens/essencials/drawers.dart';
+import 'package:TrippyAlpapp/screens/guide/guideScreen.dart';
+import 'package:TrippyAlpapp/screens/searchScreen/searchScreen.dart';
+import 'package:TrippyAlpapp/screens/socialMedia/socailMediaPage.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:app/constants/sizeConfig.dart';
+import 'package:TrippyAlpapp/constants/sizeConfig.dart';
 
 class AppNavigatorScreen extends StatefulWidget {
   final int pagecount;
@@ -37,7 +39,7 @@ class _AppNavigatorScreenState extends State<AppNavigatorScreen>
   bool bottombar = true, darkTheme = false;
 
   Widget tabBody = Container(
-    color: AppTheme.background,
+    color: AppTheme.firstColor,
   );
 
   int startingPage = 90;
@@ -123,7 +125,7 @@ class _AppNavigatorScreenState extends State<AppNavigatorScreen>
         case 40:
           setState(() {
             bottombar = true;
-            tabBody = SearchScreen(
+            tabBody = CreateNewScreen(
               animationController: animationController,
               updatePage: _updateBar,
               scaffoldKey: scaffoldKey,
@@ -132,6 +134,16 @@ class _AppNavigatorScreenState extends State<AppNavigatorScreen>
           break;
 
         // map pageId : 60
+        case 60:
+          setState(() {
+            bottombar = true;
+            tabBody = MapViewScreen(
+              animation: _animation,
+              animationController: animationController,
+              updatePage: _updateBar,
+            );
+          });
+          break;
 
         //login - Register - Welcome Pages
         case 90:
@@ -219,13 +231,28 @@ class _AppNavigatorScreenState extends State<AppNavigatorScreen>
               bottomNavigationBar: CurvedNavigationBar(
                 index: currIndex,
                 backgroundColor: AppTheme.firstColor.withOpacity(.3),
-                color: Colors.white,
-                items: const <Widget>[
-                  FaIcon(FontAwesomeIcons.home),
-                  FaIcon(FontAwesomeIcons.search),
-                  FaIcon(FontAwesomeIcons.plus),
-                  FaIcon(FontAwesomeIcons.map),
-                  FaIcon(FontAwesomeIcons.shoppingBag),
+                color: AppTheme.background,
+                items: <Widget>[
+                  FaIcon(
+                    FontAwesomeIcons.home,
+                    color: AppTheme.textColor,
+                  ),
+                  FaIcon(
+                    FontAwesomeIcons.search,
+                    color: AppTheme.textColor,
+                  ),
+                  FaIcon(
+                    FontAwesomeIcons.plus,
+                    color: AppTheme.textColor,
+                  ),
+                  FaIcon(
+                    FontAwesomeIcons.map,
+                    color: AppTheme.textColor,
+                  ),
+                  FaIcon(
+                    FontAwesomeIcons.shoppingBag,
+                    color: AppTheme.textColor,
+                  ),
                 ],
                 onTap: (index) {
                   switch (index) {

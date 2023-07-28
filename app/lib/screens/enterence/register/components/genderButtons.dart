@@ -1,6 +1,5 @@
-
-import 'package:app/constants/theme.dart';
-import 'package:app/widgets/app_text.dart';
+import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

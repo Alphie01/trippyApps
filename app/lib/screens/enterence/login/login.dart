@@ -1,9 +1,10 @@
 import 'dart:ui';
-import 'package:app/constants/sharedPreferencesKeynames.dart';
-import 'package:app/constants/theme.dart';
-import 'package:app/core/sharedPreferences.dart';
-import 'package:app/widgets/app_large_text.dart';
-import 'package:app/widgets/app_text.dart';
+import 'package:TrippyAlpapp/constants/sharedPreferencesKeynames.dart';
+import 'package:TrippyAlpapp/constants/sizeConfig.dart';
+import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/core/sharedPreferences.dart';
+import 'package:TrippyAlpapp/widgets/app_large_text.dart';
+import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -21,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen>
     with TickerProviderStateMixin {
   AnimationController? swipeAnimation;
   Animation? animation1, animation2, reload;
+  bool isLoading = false;
 
   List welcomePhotos = [
     [
@@ -96,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen>
                               top: 15, left: 5, right: 5, bottom: 15),
                           child: ListView.builder(
                             itemCount: 4,
-                            padding: EdgeInsets.zero,
+                            padding: paddingZero,
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             scrollDirection: Axis.vertical,
@@ -131,7 +133,7 @@ class _LoginScreenState extends State<LoginScreen>
                               top: 15, left: 5, right: 5, bottom: 15),
                           child: ListView.builder(
                             itemCount: 4,
-                            padding: EdgeInsets.zero,
+                            padding: paddingZero,
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             scrollDirection: Axis.vertical,
@@ -166,7 +168,7 @@ class _LoginScreenState extends State<LoginScreen>
                               top: 15, left: 5, right: 5, bottom: 15),
                           child: ListView.builder(
                             itemCount: 4,
-                            padding: EdgeInsets.zero,
+                            padding: paddingZero,
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             scrollDirection: Axis.vertical,
@@ -290,76 +292,109 @@ class _LoginScreenState extends State<LoginScreen>
                                     ),
                                   ),
                                 ),
-                                Container(
-                                  width: double.maxFinite,
-                                  padding: EdgeInsets.all(15),
-                                  alignment: Alignment.center,
-                                  child: AppLargeText(
-                                    text: 'Giriş Yap',
-                                    color: AppTheme.background,
-                                    size: 16,
-                                  ),
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: AppTheme.firstColor)),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    widget.updatePage!(pageId: 93);
-                                  },
-                                  child: Container(
-                                    margin:
-                                        EdgeInsets.only(top: 15, bottom: 25),
-                                    width: double.maxFinite,
-                                    padding: EdgeInsets.all(15),
-                                    alignment: Alignment.center,
-                                    child: AppLargeText(
-                                      text: 'Kayıt Ol',
-                                      color: AppTheme.background,
-                                      size: 16,
-                                    ),
-                                    decoration: BoxDecoration(
-                                        color: AppTheme.firstColor),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    SharedPref.addStringToSF(userToken, 'value');
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.only(top: 25),
-                                    width: double.maxFinite,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                        border: Border(
-                                            top: BorderSide(
-                                                width: 1,
-                                                color: AppTheme.firstColor))),
-                                    child: AppText(
-                                      size: 12,
-                                      text:
-                                          'Sosyal Medya İle Giriş Yapmak İçin',
-                                      color:
-                                          AppTheme.background.withOpacity(.7),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.symmetric(vertical: 15),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      socialLoginButton(
-                                          FontAwesomeIcons.google),
-                                      socialLoginButton(
-                                          FontAwesomeIcons.twitter),
-                                      socialLoginButton(
-                                          FontAwesomeIcons.instagram),
-                                      socialLoginButton(
-                                          FontAwesomeIcons.linkedin),
-                                    ],
-                                  ),
-                                )
+                                isLoading
+                                    ? Container(
+                                        width: double.maxFinite,
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 15),
+                                        alignment: Alignment.center,
+                                        child: Container(
+                                          height: 50,
+                                          width: 50,
+                                          child: CircularProgressIndicator(
+                                            color: AppTheme.firstColor,
+                                          ),
+                                        ),
+                                      )
+                                    : Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                isLoading = true;
+                                              });
+                                              Future.delayed(
+                                                  Duration(seconds: 2), () {
+                                                SharedPref.addStringToSF(
+                                                    userToken, 'value');
+                                                widget.updatePage!(pageId: 94);
+                                              });
+                                            },
+                                            child: Container(
+                                              width: double.maxFinite,
+                                              padding: EdgeInsets.all(15),
+                                              alignment: Alignment.center,
+                                              child: AppLargeText(
+                                                text: 'Giriş Yap',
+                                                color: AppTheme.background,
+                                                size: 16,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color:
+                                                          AppTheme.firstColor)),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              widget.updatePage!(pageId: 93);
+                                            },
+                                            child: Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 15, bottom: 25),
+                                              width: double.maxFinite,
+                                              padding: EdgeInsets.all(15),
+                                              alignment: Alignment.center,
+                                              child: AppLargeText(
+                                                text: 'Kayıt Ol',
+                                                color: AppTheme.background,
+                                                size: 16,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                  color: AppTheme.firstColor),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {},
+                                            child: Container(
+                                              padding: EdgeInsets.only(top: 25),
+                                              width: double.maxFinite,
+                                              alignment: Alignment.center,
+                                              decoration: BoxDecoration(
+                                                  border: Border(
+                                                      top: BorderSide(
+                                                          width: 1,
+                                                          color: AppTheme
+                                                              .firstColor))),
+                                              child: AppText(
+                                                size: 12,
+                                                text:
+                                                    'Sosyal Medya İle Giriş Yapmak İçin',
+                                                color: AppTheme.background
+                                                    .withOpacity(.7),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.symmetric(
+                                                vertical: 15),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                socialLoginButton(
+                                                    FontAwesomeIcons.google),
+                                                socialLoginButton(
+                                                    FontAwesomeIcons.twitter),
+                                                socialLoginButton(
+                                                    FontAwesomeIcons.instagram),
+                                                socialLoginButton(
+                                                    FontAwesomeIcons.linkedin),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      )
                               ],
                             ),
                           ),

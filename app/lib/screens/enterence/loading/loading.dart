@@ -1,7 +1,7 @@
-import 'package:app/constants/sizeConfig.dart';
-import 'package:app/constants/theme.dart';
-import 'package:app/widgets/app_large_text.dart';
-import 'package:app/widgets/app_text.dart';
+import 'package:TrippyAlpapp/constants/sizeConfig.dart';
+import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/widgets/app_large_text.dart';
+import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 
 class LoadingScreen extends StatefulWidget {

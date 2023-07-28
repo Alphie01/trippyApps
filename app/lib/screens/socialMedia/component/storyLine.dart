@@ -1,7 +1,7 @@
-import 'package:app/constants/sizeConfig.dart';
-import 'package:app/constants/theme.dart';
-import 'package:app/screens/socialMedia/component/classes/story.dart';
-import 'package:app/widgets/app_text.dart';
+import 'package:TrippyAlpapp/constants/sizeConfig.dart';
+import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/screens/socialMedia/component/classes/story.dart';
+import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -68,7 +68,7 @@ class _StoryLineState extends State<StoryLine> with TickerProviderStateMixin {
         itemCount: widget.storyList.length,
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
-        padding: EdgeInsets.zero,
+        padding: paddingZero,
         itemBuilder: (ctx, index) {
           return GestureDetector(
             onTap: () {
@@ -83,193 +83,203 @@ class _StoryLineState extends State<StoryLine> with TickerProviderStateMixin {
                   animationController!.repeat();
                   animationController!.forward();
 
-                  return Container(
-                    width: double.maxFinite,
-                    height: MediaQuery.of(context).size.height,
-                    color: Colors.black,
-                    child: changeStory
-                        ? Container(
-                            width: double.maxFinite,
-                            height: MediaQuery.of(context).size.height,
-                            color: Colors.black,
-                          )
-                        : Stack(
-                            children: [
-                              Container(
-                                width: double.maxFinite,
-                                height: MediaQuery.of(context).size.height,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: widget
-                                          .storyList[currIndex].storyPhoto,
-                                      fit: BoxFit.cover),
+                  return GestureDetector(
+                    onLongPressStart: (details) {
+                      animationController!.stop();
+                    },
+                    onLongPressEnd: (details) {
+                      animationController!.forward();
+                    },
+                    child: Container(
+                      width: double.maxFinite,
+                      height: MediaQuery.of(context).size.height,
+                      color: Colors.black,
+                      child: changeStory
+                          ? Container(
+                              width: double.maxFinite,
+                              height: MediaQuery.of(context).size.height,
+                              color: Colors.black,
+                            )
+                          : Stack(
+                              children: [
+                                Container(
+                                  width: double.maxFinite,
+                                  height: MediaQuery.of(context).size.height,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                        image: widget
+                                            .storyList[currIndex].storyPhoto,
+                                        fit: BoxFit.cover),
+                                  ),
                                 ),
-                              ),
-                              Container(
-                                width: double.maxFinite,
-                                height: MediaQuery.of(context).size.height,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          print('önceki');
-                                        },
-                                        child: Container(
-                                          color: Colors.transparent,
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          print('sonraki');
-                                        },
-                                        child: Container(
-                                          color: Colors.transparent,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(
-                                    top: getPaddingSreenTopHeight(),
-                                    left: paddingHorizontal,
-                                    bottom: getPaddingSreenBottomHeight(),
-                                    right: paddingHorizontal),
-                                width: double.maxFinite,
-                                height: MediaQuery.of(context).size.height,
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      children: [
-                                        AnimatedBuilder(
-                                          animation: animationController!,
-                                          builder: (BuildContext context,
-                                              Widget? child) {
-                                            return Container(
-                                              margin:
-                                                  EdgeInsets.only(bottom: 15),
-                                              child: LinearProgressIndicator(
-                                                value:
-                                                    animationController!.value,
-                                                color: Colors.white,
-                                                backgroundColor: Colors.white
-                                                    .withOpacity(.3),
-                                              ),
-                                            );
+                                Container(
+                                  width: double.maxFinite,
+                                  height: MediaQuery.of(context).size.height,
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            print('önceki');
                                           },
+                                          child: Container(
+                                            color: Colors.transparent,
+                                          ),
                                         ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Container(
-                                                  width: 35,
-                                                  height: 35,
-                                                  margin: EdgeInsets.only(
-                                                      right: 15),
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20),
-                                                      color: Colors.black),
+                                      ),
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            print('sonraki');
+                                          },
+                                          child: Container(
+                                            color: Colors.transparent,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      top: getPaddingSreenTopHeight(),
+                                      left: paddingHorizontal,
+                                      bottom: getPaddingSreenBottomHeight(),
+                                      right: paddingHorizontal),
+                                  width: double.maxFinite,
+                                  height: MediaQuery.of(context).size.height,
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          AnimatedBuilder(
+                                            animation: animationController!,
+                                            builder: (BuildContext context,
+                                                Widget? child) {
+                                              return Container(
+                                                margin:
+                                                    EdgeInsets.only(bottom: 15),
+                                                child: LinearProgressIndicator(
+                                                  value: animationController!
+                                                      .value,
+                                                  color: Colors.white,
+                                                  backgroundColor: Colors.white
+                                                      .withOpacity(.3),
                                                 ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    AppText(
-                                                      text:
-                                                          '${widget.storyList[currIndex].userName}',
-                                                      size: 18,
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Container(
-                                                          margin:
-                                                              EdgeInsets.only(
-                                                                  right: 10),
-                                                          child: FaIcon(
-                                                            FontAwesomeIcons
-                                                                .paperPlane,
+                                              );
+                                            },
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    width: 35,
+                                                    height: 35,
+                                                    margin: EdgeInsets.only(
+                                                        right: 15),
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        color: Colors.black),
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      AppText(
+                                                        text:
+                                                            '${widget.storyList[currIndex].userName}',
+                                                        size: 18,
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                    right: 10),
+                                                            child: FaIcon(
+                                                              FontAwesomeIcons
+                                                                  .paperPlane,
+                                                              size: 12,
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                          ),
+                                                          AppText(
+                                                            text:
+                                                                'Rotayı Görüntüle',
                                                             size: 12,
                                                             color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.bold,
                                                           ),
-                                                        ),
-                                                        AppText(
-                                                          text:
-                                                              'Rotayı Görüntüle',
-                                                          size: 12,
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Container(
-                                                    child: FaIcon(
-                                                  FontAwesomeIcons
-                                                      .ellipsisVertical,
-                                                  color: Colors.white,
-                                                )),
-                                                Container(
-                                                    margin: EdgeInsets.only(
-                                                        left: 15),
-                                                    child: FaIcon(
-                                                      FontAwesomeIcons.xmark,
-                                                      color: Colors.white,
-                                                    )),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        showModalBottomSheet(
-                                            context: context,
-                                            builder: (ctx) {
-                                              return Container(
-                                                width: double.maxFinite,
-                                                color: Colors.white,
-                                                height: MediaQuery.of(context)
-                                                    .size
-                                                    .height,
-                                              );
-                                            });
-                                      },
-                                      child: Container(
-                                        width: double.maxFinite,
-                                        height: 15,
-                                        color: Colors.white,
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                      child: FaIcon(
+                                                    FontAwesomeIcons
+                                                        .ellipsisVertical,
+                                                    color: Colors.white,
+                                                  )),
+                                                  Container(
+                                                      margin: EdgeInsets.only(
+                                                          left: 15),
+                                                      child: FaIcon(
+                                                        FontAwesomeIcons.xmark,
+                                                        color: Colors.white,
+                                                      )),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                    )
-                                  ],
+                                      GestureDetector(
+                                        onTap: () {
+                                          showModalBottomSheet(
+                                              context: context,
+                                              builder: (ctx) {
+                                                return Container(
+                                                  width: double.maxFinite,
+                                                  color: Colors.white,
+                                                  height: MediaQuery.of(context)
+                                                      .size
+                                                      .height,
+                                                );
+                                              });
+                                        },
+                                        child: Container(
+                                          width: double.maxFinite,
+                                          height: 15,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
+                              ],
+                            ),
+                    ),
                   );
                 },
               );

@@ -1,10 +1,11 @@
 import 'dart:ui';
-import 'package:app/constants/theme.dart';
-import 'package:app/screens/enterence/register/components/GendernName.dart';
-import 'package:app/screens/enterence/register/components/confirmationPage.dart';
-import 'package:app/screens/enterence/register/components/mailandPassword.dart';
-import 'package:app/widgets/app_large_text.dart';
-import 'package:app/widgets/app_text.dart';
+import 'package:TrippyAlpapp/constants/sizeConfig.dart';
+import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/screens/enterence/register/components/GendernName.dart';
+import 'package:TrippyAlpapp/screens/enterence/register/components/confirmationPage.dart';
+import 'package:TrippyAlpapp/screens/enterence/register/components/mailandPassword.dart';
+import 'package:TrippyAlpapp/widgets/app_large_text.dart';
+import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -175,7 +176,7 @@ class _RegisterScreenState extends State<RegisterScreen>
               padding: EdgeInsets.only(top: 15, left: 5, right: 5, bottom: 15),
               child: ListView.builder(
                 itemCount: 4,
-                padding: EdgeInsets.zero,
+                padding: paddingZero,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
@@ -207,7 +208,7 @@ class _RegisterScreenState extends State<RegisterScreen>
               padding: EdgeInsets.only(top: 15, left: 5, right: 5, bottom: 15),
               child: ListView.builder(
                 itemCount: 4,
-                padding: EdgeInsets.zero,
+                padding: paddingZero,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,
@@ -239,7 +240,7 @@ class _RegisterScreenState extends State<RegisterScreen>
               padding: EdgeInsets.only(top: 15, left: 5, right: 5, bottom: 15),
               child: ListView.builder(
                 itemCount: 4,
-                padding: EdgeInsets.zero,
+                padding: paddingZero,
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
                 scrollDirection: Axis.vertical,

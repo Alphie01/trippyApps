@@ -1,8 +1,8 @@
 import 'dart:ui';
-import 'package:app/constants/sizeConfig.dart';
-import 'package:app/constants/theme.dart';
-import 'package:app/widgets/app_large_text.dart';
-import 'package:app/widgets/app_text.dart';
+import 'package:TrippyAlpapp/constants/sizeConfig.dart';
+import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/widgets/app_large_text.dart';
+import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -160,119 +160,110 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
   Container BackgroundAnimation(BuildContext context) {
     return Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                color: Colors.black,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        padding: EdgeInsets.only(
-                            top: 15, left: 5, right: 5, bottom: 15),
-                        child: ListView.builder(
-                          itemCount: 4,
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          itemBuilder: (context, index) {
-                            return AnimatedBuilder(
-                              animation: animation1!,
-                              builder: ((context, child) {
-                                return Transform.translate(
-                                  offset: Offset(0, animation1!.value),
-                                  child: Container(
-                                    height: 250,
-                                    margin: EdgeInsets.only(bottom: 10),
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: AssetImage(
-                                                welcomePhotos[0][index]),
-                                            fit: BoxFit.cover),
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                  ),
-                                );
-                              }),
-                            );
-                          },
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      color: Colors.black,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            flex: 1,
+            child: Container(
+              padding: EdgeInsets.only(top: 15, left: 5, right: 5, bottom: 15),
+              child: ListView.builder(
+                itemCount: 4,
+                padding: paddingZero,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  return AnimatedBuilder(
+                    animation: animation1!,
+                    builder: ((context, child) {
+                      return Transform.translate(
+                        offset: Offset(0, animation1!.value),
+                        child: Container(
+                          height: 250,
+                          margin: EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(welcomePhotos[0][index]),
+                                  fit: BoxFit.cover),
+                              borderRadius: BorderRadius.circular(15)),
                         ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        padding: EdgeInsets.only(
-                            top: 15, left: 5, right: 5, bottom: 15),
-                        child: ListView.builder(
-                          itemCount: 4,
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          itemBuilder: (context, index) {
-                            return AnimatedBuilder(
-                              animation: animation2!,
-                              builder: ((context, child) {
-                                return Transform.translate(
-                                  offset: Offset(0, animation2!.value),
-                                  child: Container(
-                                    height: 250,
-                                    margin: EdgeInsets.only(bottom: 10),
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: AssetImage(
-                                                welcomePhotos[1][index]),
-                                            fit: BoxFit.cover),
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                  ),
-                                );
-                              }),
-                            );
-                          },
+                      );
+                    }),
+                  );
+                },
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              padding: EdgeInsets.only(top: 15, left: 5, right: 5, bottom: 15),
+              child: ListView.builder(
+                itemCount: 4,
+                padding: paddingZero,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  return AnimatedBuilder(
+                    animation: animation2!,
+                    builder: ((context, child) {
+                      return Transform.translate(
+                        offset: Offset(0, animation2!.value),
+                        child: Container(
+                          height: 250,
+                          margin: EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(welcomePhotos[1][index]),
+                                  fit: BoxFit.cover),
+                              borderRadius: BorderRadius.circular(15)),
                         ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        padding: EdgeInsets.only(
-                            top: 15, left: 5, right: 5, bottom: 15),
-                        child: ListView.builder(
-                          itemCount: 4,
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          itemBuilder: (context, index) {
-                            return AnimatedBuilder(
-                              animation: animation1!,
-                              builder: ((context, child) {
-                                return Transform.translate(
-                                  offset: Offset(0, animation1!.value),
-                                  child: Container(
-                                    height: 250,
-                                    margin: EdgeInsets.only(bottom: 10),
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: AssetImage(
-                                                welcomePhotos[2][index]),
-                                            fit: BoxFit.cover),
-                                        borderRadius:
-                                            BorderRadius.circular(15)),
-                                  ),
-                                );
-                              }),
-                            );
-                          },
+                      );
+                    }),
+                  );
+                },
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              padding: EdgeInsets.only(top: 15, left: 5, right: 5, bottom: 15),
+              child: ListView.builder(
+                itemCount: 4,
+                padding: paddingZero,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index) {
+                  return AnimatedBuilder(
+                    animation: animation1!,
+                    builder: ((context, child) {
+                      return Transform.translate(
+                        offset: Offset(0, animation1!.value),
+                        child: Container(
+                          height: 250,
+                          margin: EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage(welcomePhotos[2][index]),
+                                  fit: BoxFit.cover),
+                              borderRadius: BorderRadius.circular(15)),
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
+                      );
+                    }),
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

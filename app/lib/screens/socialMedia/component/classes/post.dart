@@ -1,5 +1,5 @@
-import 'package:app/globals/comments.dart';
-import 'package:app/globals/users.dart';
+import 'package:TrippyAlpapp/globals/comments.dart';
+import 'package:TrippyAlpapp/globals/users.dart';
 import 'package:flutter/material.dart';
 
 class PostClasses {

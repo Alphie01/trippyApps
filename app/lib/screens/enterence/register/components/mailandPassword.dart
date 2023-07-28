@@ -1,8 +1,8 @@
-import 'package:app/constants/sizeConfig.dart';
-import 'package:app/constants/stringConstans.dart';
-import 'package:app/constants/theme.dart';
-import 'package:app/widgets/app_large_text.dart';
-import 'package:app/widgets/app_text.dart';
+import 'package:TrippyAlpapp/constants/sizeConfig.dart';
+import 'package:TrippyAlpapp/constants/stringConstans.dart';
+import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/widgets/app_large_text.dart';
+import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -300,7 +300,7 @@ class _MailandPasswordState extends State<MailandPassword> {
                 Expanded(
                   flex: 8,
                   child: ListView(
-                    padding: EdgeInsets.zero,
+                    padding: paddingZero,
                     shrinkWrap: true,
                     children: [
                       Container(
@@ -353,7 +353,7 @@ class _MailandPasswordState extends State<MailandPassword> {
                 Expanded(
                   flex: 8,
                   child: ListView(
-                    padding: EdgeInsets.zero,
+                    padding: paddingZero,
                     shrinkWrap: true,
                     children: [
                       Container(
