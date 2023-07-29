@@ -39,7 +39,7 @@ class AppText extends StatelessWidget {
 
   AppText(
       {Key? key,
-      this.size = 16,
+      this.size = 12,
       this.maxLineCount = 5,
       required this.text,
       this.fontWeight = FontWeight.normal,

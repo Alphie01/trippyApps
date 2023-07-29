@@ -145,7 +145,7 @@ class _SocialMediaScreenState extends State<SocialMediaScreen>
                         width: double.maxFinite,
                         height: MediaQuery.of(context).size.height,
                         padding: EdgeInsets.only(
-                          top: getPaddingSreenTopHeight() + 10,
+                          top: 2*getPaddingSreenTopHeight() + 10,
                         ),
                         child: ListView(
                           padding:
@@ -232,7 +232,7 @@ class _SocialMediaScreenState extends State<SocialMediaScreen>
                       top: getPaddingSreenTopHeight(),
                       left: paddingHorizontal,
                       right: paddingHorizontal,
-                      bottom: 20),
+                      bottom: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,

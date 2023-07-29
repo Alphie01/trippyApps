@@ -55,12 +55,12 @@ class PostUI extends StatelessWidget {
             ],
           ),
           Container(
-            margin: EdgeInsets.symmetric(vertical: 25),
+            margin: EdgeInsets.symmetric(vertical: 10),
             height: 250,
             decoration: BoxDecoration(color: Colors.amber),
           ),
           Container(
-            margin: EdgeInsets.only(bottom: 25),
+            margin: EdgeInsets.only(bottom: 10),
             child: AppText(text: postClasses.postString!),
           ),
           Container(

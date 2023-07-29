@@ -23,7 +23,7 @@ class _DrawersState extends State<Drawers> {
   @override
   void initState() {
     setState(() {
-      switchPos = widget.darkTheme;
+      switchPos = SharedPref.getBoolValuesSF(darkOrLightMode);
     });
 
     // TODO: implement initState
@@ -195,8 +195,9 @@ class _DrawersState extends State<Drawers> {
             ],
           ),
           onTap: () {
+            SharedPref.removeStrValue(isShownWelcomeInfos);
             SharedPref.removeStrValue(userToken);
-            widget.updatePage(pageId: 92);
+            widget.updatePage(pageId: 90);
           },
         ),
       ],

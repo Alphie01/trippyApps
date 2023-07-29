@@ -1,6 +1,9 @@
 import 'dart:async';
 
+import 'package:TrippyAlpapp/constants/sharedPreferencesKeynames.dart';
+import 'package:TrippyAlpapp/constants/sizeConfig.dart';
 import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/core/sharedPreferences.dart';
 import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -28,11 +31,14 @@ class Maps extends StatefulWidget {
   _MapsState createState() => _MapsState();
 }
 
-class _MapsState extends State<Maps> {
+class _MapsState extends State<Maps> with TickerProviderStateMixin {
   Set<Marker> _markers = {};
 
   MapType _currentMapType = MapType.normal;
   GoogleMapController? mapController;
+  AnimationController? searchField;
+  Animation<double>? fieldOpacity, fieldTransform;
+  bool fieldSeen = false, onLoadingField = false;
 
   late CameraPosition _initalCameraPosition;
 
@@ -49,6 +55,10 @@ class _MapsState extends State<Maps> {
   @override
   void initState() {
     super.initState();
+    searchField = AnimationController(vsync: this, duration: defaultDuration);
+    fieldOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(searchField!);
+    fieldTransform =
+        Tween<double>(begin: -150.0, end: 0.0).animate(searchField!);
 
     _initalCameraPosition = CameraPosition(target: widget.latLng, zoom: 16);
 
@@ -125,9 +135,54 @@ class _MapsState extends State<Maps> {
     );
   }
 
+  void fetchNewPlaces() {
+    setState(() {
+      onLoadingField = true;
+    });
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        onLoadingField = false;
+      });
+    });
+  }
+
   void dispose() {
     mapController!.dispose();
     super.dispose();
+  }
+
+  void _getVisibleRegionCoordinates() async {
+    if (mapController == null) {
+      return;
+    }
+
+    LatLngBounds visibleRegion = await mapController!.getVisibleRegion();
+    LatLng northeast = visibleRegion.northeast;
+    LatLng southwest = visibleRegion.southwest;
+
+    /* print(
+        'Şuanki Konum koordinatları: ${_currentPosition!.latitude} , ${_currentPosition!.longitude}');
+    print('Görünen bölge koordinatları:');
+    print(
+        'Kuzeydoğu Koordinatları: (${northeast.latitude}, ${northeast.longitude})');
+    print(
+        'Güneybatı Koordinatları: (${southwest.latitude}, ${southwest.longitude})'); */
+
+    if (northeast.latitude > _currentPosition!.latitude &&
+        _currentPosition!.latitude > southwest.latitude &&
+        northeast.longitude > _currentPosition!.longitude &&
+        _currentPosition!.longitude > southwest.longitude) {
+      searchField!.reverse().then((value) {
+        setState(() {
+          fieldSeen = false;
+        });
+      });
+    } else {
+      setState(() {
+        fieldSeen = true;
+      });
+      searchField!.forward();
+    }
   }
 
   Widget emptyBody = Container(
@@ -150,16 +205,27 @@ class _MapsState extends State<Maps> {
           children: <Widget>[
             GoogleMap(
               onTap: (position) {},
-              onCameraMove: (position) {},
+              onCameraMove: (CameraPosition position) {
+                /* print(position); */
+                _getVisibleRegionCoordinates();
+              },
               onMapCreated: (GoogleMapController controller) async {
                 setState(() {
                   mapController = controller;
                 });
-                rootBundle
-                    .loadString('assets/map.json')
-                    .then((String mapStyle) {
-                  controller.setMapStyle(mapStyle);
-                });
+                if (SharedPref.getBoolValuesSF(darkOrLightMode)) {
+                  rootBundle
+                      .loadString('assets/map.json')
+                      .then((String mapStyle) {
+                    controller.setMapStyle(mapStyle);
+                  });
+                } else {
+                  rootBundle
+                      .loadString('assets/map_light.json')
+                      .then((String mapStyle) {
+                    controller.setMapStyle(mapStyle);
+                  });
+                }
               },
               markers: _markers,
               mapType: MapType.normal,
@@ -182,6 +248,50 @@ class _MapsState extends State<Maps> {
               zoomGesturesEnabled: true,
               zoomControlsEnabled: true,
             ),
+            fieldSeen
+                ? AnimatedBuilder(
+                    animation: searchField!,
+                    builder: (BuildContext context, Widget? child) {
+                      return Opacity(
+                        opacity: fieldOpacity!.value,
+                        child: Transform.translate(
+                          offset: Offset(0, fieldTransform!.value),
+                          child: onLoadingField
+                              ? Container(
+                                  width: double.maxFinite,
+                                  margin: EdgeInsets.only(
+                                      top: getPaddingSreenTopHeight() * 3),
+                                  alignment: Alignment.topCenter,
+                                  child: Container(
+                                    width: 50,
+                                    height: 50,
+                                    child: CircularProgressIndicator(
+                                      color: AppTheme.firstColor,
+                                    ),
+                                  ),
+                                )
+                              : GestureDetector(
+                                  onTap: fetchNewPlaces,
+                                  child: Container(
+                                    width: double.maxFinite,
+                                    margin: EdgeInsets.only(
+                                        top: getPaddingSreenTopHeight() * 3),
+                                    alignment: Alignment.topCenter,
+                                    child: Container(
+                                      padding: EdgeInsets.all(15),
+                                      decoration: BoxDecoration(
+                                          color: AppTheme.background,
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      child: AppText(text: 'Bu Alanda Ara'),
+                                    ),
+                                  ),
+                                ),
+                        ),
+                      );
+                    },
+                  )
+                : Container()
           ],
         ),
       );

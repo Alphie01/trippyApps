@@ -36,7 +36,8 @@ class _SearchScreenState extends State<SearchScreen>
         categoryAssetImg: AssetImage('assets/search/search_2.jpg')),
     SearchCategory(
         categoryName: 'Şehirler',
-        categoryAssetImg: AssetImage('assets/search/search_3.jpg')),
+        categoryAssetImg: AssetImage('assets/search/search_3.jpg'),
+        categoryOnclickFunc: () {}),
     SearchCategory(
         categoryName: 'Seyahat Rotaları',
         categoryAssetImg: AssetImage('assets/search/search_4.jpg')),
@@ -90,7 +91,7 @@ class _SearchScreenState extends State<SearchScreen>
       }
     });
 
-    setSearchWidget(0);
+
     topBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
             parent: widget.animationController!,
@@ -131,26 +132,7 @@ class _SearchScreenState extends State<SearchScreen>
     if (scrollController.offset < getPaddingSreenTopHeight()) {}
   }
 
-  void setSearchWidget(int widgetId) {
-    switch (widgetId) {
-      case 0:
-        setState(() {
-          tabBody = ListView(
-            shrinkWrap: true,
-            padding: paddingZero,
-            children: [
-              Container(
-                margin: EdgeInsets.only(top: paddingHorizontal),
-                child: AppText(text: 'Tümü Arama'),
-              )
-            ],
-          );
-        });
-        break;
-
-      default:
-    }
-  }
+  
 
   void dataUpdate() {
     setState(() {
@@ -284,7 +266,7 @@ class _SearchScreenState extends State<SearchScreen>
                         width: double.maxFinite,
                         height: MediaQuery.of(context).size.height,
                         padding: EdgeInsets.only(
-                          top: getPaddingSreenTopHeight() + 10,
+                          top: 2 * getPaddingSreenTopHeight() + 15,
                         ),
                         child: ListView(
                           shrinkWrap: true,
@@ -315,9 +297,9 @@ class _SearchScreenState extends State<SearchScreen>
                                   : Container(
                                       padding: EdgeInsets.symmetric(
                                           horizontal: paddingHorizontal),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                      child: ListView(
+                                        shrinkWrap: true,
+                                        padding: paddingZero,
                                         children: [
                                           AppLargeText(
                                               text:
@@ -369,7 +351,11 @@ class _SearchScreenState extends State<SearchScreen>
                                                       hintStyle: TextStyle(
                                                           color: Colors
                                                               .grey.shade500),
-                                                      focusedBorder:UnderlineInputBorder(borderSide: BorderSide.none) ,
+                                                      focusedBorder:
+                                                          UnderlineInputBorder(
+                                                              borderSide:
+                                                                  BorderSide
+                                                                      .none),
                                                       fillColor:
                                                           AppTheme.background,
                                                       filled: true,
@@ -401,7 +387,9 @@ class _SearchScreenState extends State<SearchScreen>
                                           if (showRecentSearchs)
                                             recentSearchs()
                                           else
-                                            tabBody
+                                            Container(
+                                              
+                                            )
                                         ],
                                       ),
                                     ),
@@ -424,16 +412,13 @@ class _SearchScreenState extends State<SearchScreen>
                             child: Container(
                               alignment: Alignment.bottomLeft,
                               width: double.maxFinite,
+                              height: MediaQuery.of(context).size.height / 2,
                               margin: EdgeInsets.only(
                                 top: getPaddingSreenTopHeight() * 2,
                               ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  GetSearchCategoriesWidget(
-                                      categories: categories),
-                                ],
-                              ),
+                              child: GetSearchCategoriesWidget(
+                                  onTap: (String value) {},
+                                  categories: categories),
                             ),
                           ),
                         );
@@ -504,9 +489,11 @@ class GetSearchCategoriesWidget extends StatelessWidget {
   const GetSearchCategoriesWidget({
     super.key,
     required this.categories,
+    this.onTap,
   });
 
   final List<SearchCategory> categories;
+  final Function? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -517,15 +504,14 @@ class GetSearchCategoriesWidget extends StatelessWidget {
       decoration: BoxDecoration(
           color: AppTheme.firstColor.withOpacity(.3),
           borderRadius: BorderRadius.circular(15)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+      child: ListView(
         children: [
           Row(
             children: [
               Expanded(
                 child: SearchSelectBox(
                   categories: categories[index],
-                  height: 300,
+                  height: MediaQuery.of(context).size.height / 3,
                   borderRadius: BorderRadius.circular(15),
                 ),
               ),
@@ -534,13 +520,13 @@ class GetSearchCategoriesWidget extends StatelessWidget {
                   children: [
                     SearchSelectBox(
                       categories: categories[index + 1],
-                      height: 150,
+                      height: MediaQuery.of(context).size.height / 6,
                       borderRadius:
                           BorderRadius.vertical(top: Radius.circular(15)),
                     ),
                     SearchSelectBox(
                       categories: categories[index + 2],
-                      height: 150,
+                      height: MediaQuery.of(context).size.height / 6,
                       borderRadius:
                           BorderRadius.vertical(bottom: Radius.circular(15)),
                     ),

@@ -11,6 +11,7 @@ import 'package:TrippyAlpapp/screens/enterence/register/register.dart';
 import 'package:TrippyAlpapp/screens/essencials/drawers.dart';
 import 'package:TrippyAlpapp/screens/guide/guideScreen.dart';
 import 'package:TrippyAlpapp/screens/searchScreen/searchScreen.dart';
+import 'package:TrippyAlpapp/screens/shopping/shopping.dart';
 import 'package:TrippyAlpapp/screens/socialMedia/socailMediaPage.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -195,6 +196,11 @@ class _AppNavigatorScreenState extends State<AppNavigatorScreen>
           });
           break;
 
+        case 120:
+          setState(() {
+            tabBody = ShoppingPage();
+          });
+
         default:
           setState(() {
             tabBody = WelcomeScreen(
@@ -231,6 +237,7 @@ class _AppNavigatorScreenState extends State<AppNavigatorScreen>
               bottomNavigationBar: CurvedNavigationBar(
                 index: currIndex,
                 backgroundColor: AppTheme.firstColor.withOpacity(.3),
+                height: 50,
                 color: AppTheme.background,
                 items: <Widget>[
                   FaIcon(

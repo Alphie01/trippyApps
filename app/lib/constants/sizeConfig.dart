@@ -16,7 +16,8 @@ class SizeConfig {
 }
 
 double getPaddingSreenTopHeight() {
-  return AppBar().preferredSize.height;
+  MediaQueryData mediaQueryData = SizeConfig._mediaQueryData;
+  return mediaQueryData.padding.top;
 }
 
 double getPaddingSreenBottomHeight() {
@@ -38,6 +39,6 @@ double getProportionateScreenWidth(double inputWidth) {
   return (inputWidth / 375.0) * screenWidth;
 }
 
-double paddingHorizontal = 25.0;
+double paddingHorizontal = 15.0;
 
 EdgeInsets paddingZero = EdgeInsets.zero;

@@ -24,11 +24,11 @@ class _AppInfoState extends State<AppInfo> with TickerProviderStateMixin {
 
   Animation? animation;
   List deneme = [
-    'Yeni şehirlerin gizemli sokaklarında kaybolmaya ne dersin? Şehir Kılavuzu ile keşfetmeye hazırsan, sana unutulmaz bir seyahat deneyimi sunuyoruz! Her şehirde farklı bir hikaye var ve sen de bu hikayenin bir parçası olabilirsin. Haydi, yeni maceralara adım atmak için hemen başla!',
-    'Şehirlerin geçmişine yolculuk yapmaya ne dersin? Yüzlerce yıllık tarih ve renkli kültürlerle dolu şehirleri keşfetmeye davetlisin. Tarihi mekanları ziyaret et, yerel festivallere katıl. Unutulmaz anılar biriktirmek için bu benzersiz deneyimleri kaçırma!',
-    'Ünlü turistik mekanların yanı sıra sıra dışı rotalara da açılmaya ne dersin? Şehir Kılavuzu ile keşfedeceğin yerler arasında tarihi kaleler, nefes kesen manzaralar ve doğal güzellikler var. İster klasik turistik rotaları takip et, ister kendi özel rotalarını oluştur, her türlü deneyime açığız!',
+    'Yeni şehirlerin gizemli sokaklarında kaybolmaya ne dersin? Şehir Kılavuzu ile keşfetmeye hazırsan, sana unutulmaz bir seyahat deneyimi sunuyoruz! Her şehirde farklı bir hikaye var ve sen de bu hikayenin bir parçası olabilirsin.',
+    'Şehirlerin geçmişine yolculuk yapmaya ne dersin? Yüzlerce yıllık tarih ve renkli kültürlerle dolu şehirleri keşfetmeye davetlisin. Unutulmaz anılar biriktirmek için bu benzersiz deneyimleri kaçırma!',
+    'Ünlü turistik mekanların yanı sıra sıra dışı rotalara da açılmaya ne dersin? Şehir Kılavuzu ile keşfedeceğin yerler arasında tarihi kaleler, nefes kesen manzaralar ve doğal güzellikler var. İster klasik turistik rotaları takip et, ister kendi özel rotalarını oluştur!',
     'Seyahatinde lezzet dolu bir yolculuğa çıkmak ister misin? Yöresel lezzetlerden uluslararası mutfaklara kadar damak tadına uygun birçok seçenek seni bekliyor. Geleneksel yemekleri tat, yeni serüvene çık!',
-    "Seyahat planlama süreci artık daha kolay! Gezi rotaları, online rezervasyonlar ve daha fazlası ile seyahatlerinizi organize etmek Şehir Kılavuzu'nda mümkün. İstediğin restoranlara, etkinliklere ve gezilecek yerlere online olarak ulaşabilir, kolayca rezervasyon yapabilirsin.",
+    "Seyahat planlama süreci artık daha kolay! Gezi rotaları, online rezervasyonlar ve daha fazlası ile seyahatlerinizi organize etmek Şehir Kılavuzu'nda mümkün. İstediğin restoranlara, etkinliklere ve gezilecek yerlere online olarak ulaşabilir",
     "Seyahat deneyimlerini paylaşma zamanı geldi! Sosyal medya özelliğiyle seyahatlerinizi anında paylaşabilir, arkadaşlarınıza ilham verebilirsiniz. Şehir Kılavuzu'nda edindiğiniz eşsiz deneyimleri fotoğraflarla ve hikayelerle paylaşarak diğer gezginlere ilham olun!"
   ];
 
@@ -140,7 +140,7 @@ class _TripleWidgetState extends State<TripleWidget> {
         children: [
           Container(
             width: double.maxFinite,
-            height: 250,
+            height: MediaQuery.of(context).size.height/3,
             decoration: BoxDecoration(
               image: DecorationImage(
                   image: AssetImage(
