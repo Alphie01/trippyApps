@@ -47,6 +47,7 @@ class _MapsState extends State<Maps> with TickerProviderStateMixin {
   Location? _currentLocation;
 
   late Location _locationService;
+  BitmapDescriptor bitmapDescriptor = BitmapDescriptor.defaultMarker;
 
   bool isFetchedCurrentLocation = false;
 
@@ -59,7 +60,7 @@ class _MapsState extends State<Maps> with TickerProviderStateMixin {
     fieldOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(searchField!);
     fieldTransform =
         Tween<double>(begin: -150.0, end: 0.0).animate(searchField!);
-
+    customIcon();
     _initalCameraPosition = CameraPosition(target: widget.latLng, zoom: 16);
 
     _currentLocation = Location(
@@ -70,6 +71,15 @@ class _MapsState extends State<Maps> with TickerProviderStateMixin {
     startSetInterval(Duration(seconds: 2), () {
       getCurrentPosition();
     });
+  }
+
+  void addNewMarkers() {
+    _markers.add(
+      Marker(
+        markerId: MarkerId('Sydney'),
+        position: LatLng(40.22553508682186, 28.914500038523727),
+      ),
+    );
   }
 
   void startSetInterval(Duration duration, Function function) {
@@ -105,6 +115,14 @@ class _MapsState extends State<Maps> with TickerProviderStateMixin {
       return false;
     }
     return true;
+  }
+
+  void customIcon() async {
+    await BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(12, 12)), 'assets/pin.png')
+        .then((d) {
+      bitmapDescriptor = d;
+    });
   }
 
   Future<void> getCurrentPosition() async {
@@ -151,37 +169,36 @@ class _MapsState extends State<Maps> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void _getVisibleRegionCoordinates() async {
+  void _getVisibleRegionCoordinates(CameraPosition position) async {
     if (mapController == null) {
       return;
     }
 
-    LatLngBounds visibleRegion = await mapController!.getVisibleRegion();
-    LatLng northeast = visibleRegion.northeast;
-    LatLng southwest = visibleRegion.southwest;
-
-    /* print(
-        'Şuanki Konum koordinatları: ${_currentPosition!.latitude} , ${_currentPosition!.longitude}');
-    print('Görünen bölge koordinatları:');
-    print(
-        'Kuzeydoğu Koordinatları: (${northeast.latitude}, ${northeast.longitude})');
-    print(
-        'Güneybatı Koordinatları: (${southwest.latitude}, ${southwest.longitude})'); */
-
-    if (northeast.latitude > _currentPosition!.latitude &&
-        _currentPosition!.latitude > southwest.latitude &&
-        northeast.longitude > _currentPosition!.longitude &&
-        _currentPosition!.longitude > southwest.longitude) {
-      searchField!.reverse().then((value) {
-        setState(() {
-          fieldSeen = false;
-        });
+    if (position.zoom < 15.5) {
+      setState(() {
+        _markers = {};
       });
     } else {
-      setState(() {
-        fieldSeen = true;
-      });
-      searchField!.forward();
+      addNewMarkers();
+      LatLngBounds visibleRegion = await mapController!.getVisibleRegion();
+      LatLng northeast = visibleRegion.northeast;
+      LatLng southwest = visibleRegion.southwest;
+
+      if (northeast.latitude > _currentPosition!.latitude &&
+          _currentPosition!.latitude > southwest.latitude &&
+          northeast.longitude > _currentPosition!.longitude &&
+          _currentPosition!.longitude > southwest.longitude) {
+        searchField!.reverse().then((value) {
+          setState(() {
+            fieldSeen = false;
+          });
+        });
+      } else {
+        setState(() {
+          fieldSeen = true;
+        });
+        searchField!.forward();
+      }
     }
   }
 
@@ -206,13 +223,13 @@ class _MapsState extends State<Maps> with TickerProviderStateMixin {
             GoogleMap(
               onTap: (position) {},
               onCameraMove: (CameraPosition position) {
-                /* print(position); */
-                _getVisibleRegionCoordinates();
+                _getVisibleRegionCoordinates(position);
               },
               onMapCreated: (GoogleMapController controller) async {
                 setState(() {
                   mapController = controller;
                 });
+                addNewMarkers();
                 if (SharedPref.getBoolValuesSF(darkOrLightMode)) {
                   rootBundle
                       .loadString('assets/map.json')

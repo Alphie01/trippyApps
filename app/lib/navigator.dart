@@ -198,8 +198,14 @@ class _AppNavigatorScreenState extends State<AppNavigatorScreen>
 
         case 120:
           setState(() {
-            tabBody = ShoppingPage();
+            bottombar = true;
+            tabBody = ShoppingScreen(
+              animationController: animationController,
+              updatePage: _updateBar,
+              scaffoldKey: scaffoldKey,
+            );
           });
+          break;
 
         default:
           setState(() {
@@ -237,7 +243,7 @@ class _AppNavigatorScreenState extends State<AppNavigatorScreen>
               bottomNavigationBar: CurvedNavigationBar(
                 index: currIndex,
                 backgroundColor: AppTheme.firstColor.withOpacity(.3),
-                height: 50,
+                height: MediaQuery.of(context).size.height / 14,
                 color: AppTheme.background,
                 items: <Widget>[
                   FaIcon(

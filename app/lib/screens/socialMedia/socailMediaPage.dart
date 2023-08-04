@@ -145,7 +145,7 @@ class _SocialMediaScreenState extends State<SocialMediaScreen>
                         width: double.maxFinite,
                         height: MediaQuery.of(context).size.height,
                         padding: EdgeInsets.only(
-                          top: 2*getPaddingSreenTopHeight() + 10,
+                          top: getPaddingSreenTopHeight() + AppBar().preferredSize.height,
                         ),
                         child: ListView(
                           padding:
