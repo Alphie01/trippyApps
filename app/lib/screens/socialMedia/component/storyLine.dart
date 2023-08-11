@@ -61,6 +61,9 @@ class _StoryLineState extends State<StoryLine> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(
+        top: getPaddingSreenTopHeight() + AppBar().preferredSize.height,
+      ),
       width: double.maxFinite,
       alignment: Alignment.center,
       height: 100,

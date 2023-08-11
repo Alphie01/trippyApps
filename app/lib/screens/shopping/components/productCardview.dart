@@ -53,20 +53,42 @@ class _ProductCardviewState extends State<ProductCardview> {
           children: [
             Expanded(
               flex: 7,
-              child: PageView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: widget.shoppingProduct.productImgs.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(15)),
-                      image: DecorationImage(
-                          image: widget.shoppingProduct.productImgs[index],
-                          fit: BoxFit.cover),
+              child: Stack(
+                children: [
+                  PageView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: widget.shoppingProduct.productImgs.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(15)),
+                          image: DecorationImage(
+                              image: widget.shoppingProduct.productImgs[index],
+                              fit: BoxFit.cover),
+                        ),
+                      );
+                    },
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Container(
+                      
+                      width: 100,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        padding: paddingZero,
+                        itemCount: widget.shoppingProduct.productBatches.length,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (cts, inds) {
+                          return widget
+                              .shoppingProduct.productBatches[inds].batchWidget;
+                        },
+                      ),
                     ),
-                  );
-                },
+                  )
+                ],
               ),
             ),
             Expanded(

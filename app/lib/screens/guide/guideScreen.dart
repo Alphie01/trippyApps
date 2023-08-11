@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:TrippyAlpapp/constants/sizeConfig.dart';
 import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/core/classes/cityGuide/place_categories.dart';
 import 'package:TrippyAlpapp/screens/guide/components/maps.dart';
 import 'package:TrippyAlpapp/screens/guide/components/modalPage.dart';
 import 'package:TrippyAlpapp/widgets/app_text.dart';
@@ -49,6 +50,8 @@ class _MapViewScreenState extends State<MapViewScreen>
     mapAnimation =
         Tween<double>(begin: 1.0, end: 0.0).animate(mapAnimationController!);
 
+    
+
     widget.animationController?.forward();
   }
 
@@ -79,7 +82,7 @@ class _MapViewScreenState extends State<MapViewScreen>
                         context: context,
                         builder: (ctx) {
                           return MapsModalPage(
-                            closeNavigator: (){
+                            closeNavigator: () {
                               Navigator.pop(context);
                             },
                           );
@@ -87,8 +90,11 @@ class _MapViewScreenState extends State<MapViewScreen>
                   },
                   child: Container(
                     width: double.maxFinite,
-                    
-                    padding: EdgeInsets.only(top: getPaddingSreenTopHeight(), left: paddingHorizontal, right: paddingHorizontal, bottom: 15),
+                    padding: EdgeInsets.only(
+                        top: getPaddingSreenTopHeight(),
+                        left: paddingHorizontal,
+                        right: paddingHorizontal,
+                        bottom: 15),
                     decoration: BoxDecoration(
                         borderRadius:
                             BorderRadius.vertical(bottom: Radius.circular(15)),

@@ -3,6 +3,7 @@ import 'package:TrippyAlpapp/constants/sizeConfig.dart';
 import 'package:TrippyAlpapp/constants/theme.dart';
 import 'package:TrippyAlpapp/globals/users.dart';
 import 'package:TrippyAlpapp/screens/searchScreen/components/classes/categories.dart';
+import 'package:TrippyAlpapp/screens/searchScreen/components/search_city_page.dart';
 import 'package:TrippyAlpapp/screens/socialMedia/component/classes/post.dart';
 import 'package:TrippyAlpapp/widgets/app_large_text.dart';
 import 'package:TrippyAlpapp/widgets/app_text.dart';
@@ -60,13 +61,14 @@ class _SearchScreenState extends State<SearchScreen>
 
   bool isSelectedCategory = false;
   bool isTopRefresh = false, refreshData = false;
-  PostClasses postClasses = PostClasses(
-      postBelongs: User.userProfile, postString: 'deneme String Caption');
+   
+
 
   final ScrollController scrollController = ScrollController();
-  bool showRecentSearchs = false, showFilters = false;
+  bool showRecentSearchs = false, showFilters = false, showAppbar = false;
   Animation<double>? topBarAnimation;
   double topBarOpacity = 0.0, searchBarOpacity = .6;
+  PageController? pageController;
 
   TextEditingController _editingController = TextEditingController();
   FocusNode _focusNode = FocusNode();
@@ -90,6 +92,8 @@ class _SearchScreenState extends State<SearchScreen>
         });
       }
     });
+
+    pageController = PageController();
 
 
     topBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -132,8 +136,6 @@ class _SearchScreenState extends State<SearchScreen>
     if (scrollController.offset < getPaddingSreenTopHeight()) {}
   }
 
-  
-
   void dataUpdate() {
     setState(() {
       refreshData = true;
@@ -168,6 +170,7 @@ class _SearchScreenState extends State<SearchScreen>
                     0.0, 30 * (1.0 - topBarAnimation!.value), 0.0),
                 child: Container(
                   width: double.maxFinite,
+                  height: AppBar().preferredSize.height,
                   decoration: BoxDecoration(
                     color: AppTheme.background,
                     borderRadius: BorderRadius.vertical(
@@ -262,140 +265,149 @@ class _SearchScreenState extends State<SearchScreen>
                     child: Transform(
                       transform: Matrix4.translationValues(
                           0.0, 30 * (1.0 - topBarAnimation!.value), 0.0),
-                      child: Container(
-                        width: double.maxFinite,
-                        height: MediaQuery.of(context).size.height,
-                        padding: EdgeInsets.only(
-                          top: 2 * getPaddingSreenTopHeight() + 15,
-                        ),
-                        child: ListView(
-                          shrinkWrap: true,
-                          padding:
-                              EdgeInsets.only(top: getPaddingSreenTopHeight()),
-                          controller: scrollController,
-                          children: [
-                            isTopRefresh
-                                ? Container(
-                                    width: double.maxFinite,
-                                    padding: EdgeInsets.symmetric(vertical: 15),
-                                    alignment: Alignment.center,
-                                    child: Container(
-                                      height: 50,
-                                      width: 50,
-                                      child: CircularProgressIndicator(
-                                        color: AppTheme.firstColor,
-                                      ),
-                                    ),
-                                  )
-                                : Container(),
-                            GestureDetector(
-                              onTap: () {
-                                _handleTapOutside(context);
-                              },
-                              child: isSelectedCategory
-                                  ? Container()
-                                  : Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: paddingHorizontal),
-                                      child: ListView(
-                                        shrinkWrap: true,
-                                        padding: paddingZero,
-                                        children: [
-                                          AppLargeText(
-                                              text:
-                                                  'Hangi Kategoride Aramak İstiyorsunuz?'),
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                                top: paddingHorizontal),
-                                            decoration: BoxDecoration(
-                                              color: AppTheme.background,
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              border: Border.all(
-                                                  color: AppTheme.firstColor
-                                                      .withOpacity(
-                                                          searchBarOpacity)),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: AppTheme.firstColor
-                                                      .withOpacity(.3),
-                                                  blurRadius:
-                                                      5.0, // soften the shadow
-                                                  spreadRadius:
-                                                      0.0, //extend the shadow
-                                                  offset: Offset(
-                                                    0.0,
-                                                    8.0, // Move to bottom 5 Vertically
-                                                  ), // changes position of shadow
-                                                ),
-                                              ],
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  flex: 9,
-                                                  child: TextField(
-                                                    controller:
-                                                        _editingController,
-                                                    onChanged: (news) {},
-                                                    focusNode: _focusNode,
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        color:
-                                                            AppTheme.textColor),
-                                                    cursorColor:
-                                                        AppTheme.textColor,
-                                                    decoration: InputDecoration(
-                                                      hintText:
-                                                          "Aramak için ....",
-                                                      hintStyle: TextStyle(
-                                                          color: Colors
-                                                              .grey.shade500),
-                                                      focusedBorder:
-                                                          UnderlineInputBorder(
-                                                              borderSide:
-                                                                  BorderSide
-                                                                      .none),
-                                                      fillColor:
-                                                          AppTheme.background,
-                                                      filled: true,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                    child: GestureDetector(
-                                                  onTap: () {
-                                                    setState(() {
-                                                      showFilters = true;
-                                                    });
-                                                    filterAnimation!.forward();
-                                                  },
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: FaIcon(
-                                                      FontAwesomeIcons.filter,
-                                                      color: AppTheme.textColor,
-                                                      size: 22,
-                                                    ),
-                                                  ),
-                                                ))
-                                              ],
-                                            ),
-                                          ),
-                                          if (showRecentSearchs)
-                                            recentSearchs()
-                                          else
-                                            Container(
-                                              
-                                            )
-                                        ],
-                                      ),
-                                    ),
+                      child: PageView(
+                        controller: pageController!,
+                        children: [
+                          Container(
+                            width: double.maxFinite,
+                            height: MediaQuery.of(context).size.height,
+                            padding: EdgeInsets.only(
+                              top: 2 * getPaddingSreenTopHeight() + 15,
                             ),
-                          ],
-                        ),
+                            child: ListView(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.only(
+                                  top: getPaddingSreenTopHeight()),
+                              controller: scrollController,
+                              children: [
+                                isTopRefresh
+                                    ? Container(
+                                        width: double.maxFinite,
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 15),
+                                        alignment: Alignment.center,
+                                        child: Container(
+                                          height: 50,
+                                          width: 50,
+                                          child: CircularProgressIndicator(
+                                            color: AppTheme.firstColor,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(),
+                                GestureDetector(
+                                  onTap: () {
+                                    _handleTapOutside(context);
+                                  },
+                                  child: isSelectedCategory
+                                      ? Container()
+                                      : Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: paddingHorizontal),
+                                          child: ListView(
+                                            shrinkWrap: true,
+                                            padding: paddingZero,
+                                            children: [
+                                              AppLargeText(
+                                                  text:
+                                                      'Hangi Kategoride Aramak İstiyorsunuz?'),
+                                              Container(
+                                                margin: EdgeInsets.only(
+                                                    top: paddingHorizontal),
+                                                decoration: BoxDecoration(
+                                                  color: AppTheme.background,
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                  border: Border.all(
+                                                      color: AppTheme.firstColor
+                                                          .withOpacity(
+                                                              searchBarOpacity)),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: AppTheme.firstColor
+                                                          .withOpacity(.3),
+                                                      blurRadius:
+                                                          5.0, // soften the shadow
+                                                      spreadRadius:
+                                                          0.0, //extend the shadow
+                                                      offset: Offset(
+                                                        0.0,
+                                                        8.0, // Move to bottom 5 Vertically
+                                                      ), // changes position of shadow
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 9,
+                                                      child: TextField(
+                                                        controller:
+                                                            _editingController,
+                                                        onChanged: (news) {},
+                                                        focusNode: _focusNode,
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            color: AppTheme
+                                                                .textColor),
+                                                        cursorColor:
+                                                            AppTheme.textColor,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          hintText:
+                                                              "Aramak için ....",
+                                                          hintStyle: TextStyle(
+                                                              color: Colors.grey
+                                                                  .shade500),
+                                                          focusedBorder:
+                                                              UnderlineInputBorder(
+                                                                  borderSide:
+                                                                      BorderSide
+                                                                          .none),
+                                                          fillColor: AppTheme
+                                                              .background,
+                                                          filled: true,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                        child: GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          showFilters = true;
+                                                        });
+                                                        filterAnimation!
+                                                            .forward();
+                                                      },
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(8.0),
+                                                        child: FaIcon(
+                                                          FontAwesomeIcons
+                                                              .filter,
+                                                          color: AppTheme
+                                                              .textColor,
+                                                          size: 22,
+                                                        ),
+                                                      ),
+                                                    ))
+                                                  ],
+                                                ),
+                                              ),
+                                              if (showRecentSearchs)
+                                                recentSearchs()
+                                              else
+                                                Container()
+                                            ],
+                                          ),
+                                        ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SearchCityPage()
+                        ],
                       ),
                     ),
                   );
@@ -425,7 +437,7 @@ class _SearchScreenState extends State<SearchScreen>
                       },
                     )
                   : Container(),
-              getAppBarUI(),
+              showAppbar ? getAppBarUI() : Container(),
               SizedBox(
                 height: MediaQuery.of(context).padding.bottom,
               )
@@ -505,6 +517,7 @@ class GetSearchCategoriesWidget extends StatelessWidget {
           color: AppTheme.firstColor.withOpacity(.3),
           borderRadius: BorderRadius.circular(15)),
       child: ListView(
+        padding: paddingZero,
         children: [
           Row(
             children: [

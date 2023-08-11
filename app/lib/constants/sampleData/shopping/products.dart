@@ -1,7 +1,10 @@
+import 'package:TrippyAlpapp/constants/theme.dart';
 import 'package:TrippyAlpapp/core/classes/shopping/businessOwner.dart';
 import 'package:TrippyAlpapp/core/classes/shopping/product.dart';
 import 'package:TrippyAlpapp/functions/color.dart';
+import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 List<ShoppingProduct> sampleProducts = [
   ShoppingProduct(
@@ -66,6 +69,36 @@ List<ShoppingProduct> sampleProducts = [
         sizeIsAvailable: true,
         sizeName: '',
         sizePrice: 144.99,
+      ),
+    ],
+    productBatches: [
+      ProductBatches(
+        batchId: 1,
+        batchPriorty: 5,
+        batchString: 'Trend',
+        batchWidget: Container(
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          decoration: BoxDecoration(
+              color: AppTheme.contrastColor1,
+              borderRadius: BorderRadius.circular(15)),
+          child: Row(
+            children: [
+              AppText(text: 'Trend\nÜrün '),
+              FaIcon(FontAwesomeIcons.star),
+            ],
+          ),
+        ),
+      ),
+      ProductBatches(
+        batchId: 2,
+        batchPriorty: 5,
+        batchString: 'Hızlı Teslimat',
+        batchWidget: Row(
+          children: [
+            AppText(text: 'Hızlı\nTeslimat'),
+            FaIcon(FontAwesomeIcons.box),
+          ],
+        ),
       ),
     ],
   )

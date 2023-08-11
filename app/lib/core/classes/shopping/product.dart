@@ -1,7 +1,10 @@
+import 'package:TrippyAlpapp/constants/theme.dart';
 import 'package:TrippyAlpapp/core/classes/shopping/businessOwner.dart';
 import 'package:TrippyAlpapp/functions/color.dart';
 import 'package:TrippyAlpapp/globals/comments.dart';
+import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ShoppingProduct {
   final String productName;
@@ -55,6 +58,56 @@ class ProductColor {
       this.colorImgs});
 }
 
-class ProductBatches {}
+class ProductBatches {
+  final int batchId;
+  final String batchString;
+  final int batchPriorty;
+  final Widget batchWidget;
+
+  ProductBatches(
+      {required this.batchId,
+      required this.batchWidget,
+      required this.batchPriorty,
+      required this.batchString});
+
+  static final List<ProductBatches> _productBatchs = [
+    ProductBatches(
+      batchId: 1,
+      batchPriorty: 5,
+      batchString: 'Trend',
+      batchWidget: Container(
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+        decoration: BoxDecoration(
+            color: AppTheme.contrastColor1,
+            borderRadius: BorderRadius.circular(15)),
+        child: Row(
+          children: [
+            AppText(text: 'Trend\nÜrün '),
+            FaIcon(FontAwesomeIcons.star),
+          ],
+        ),
+      ),
+    ),
+    ProductBatches(
+      batchId: 2,
+      batchPriorty: 5,
+      batchString: 'Hızlı Teslimat',
+      batchWidget: Row(
+        children: [
+          AppText(text: 'Hızlı\nTeslimat'),
+          FaIcon(FontAwesomeIcons.box),
+        ],
+      ),
+    ),
+  ];
+
+  static ProductBatches returnSelectedProductBatchs(int id) {
+    ProductBatches? selectedBatch;
+
+    
+
+    return selectedBatch!;
+  }
+}
 
 class ProductCategory {}

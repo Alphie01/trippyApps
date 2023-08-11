@@ -7,6 +7,7 @@ import 'package:TrippyAlpapp/screens/socialMedia/component/classes/story.dart';
 import 'package:TrippyAlpapp/screens/socialMedia/component/posts.dart';
 import 'package:TrippyAlpapp/screens/socialMedia/component/storyLine.dart';
 import 'package:TrippyAlpapp/widgets/app_text.dart';
+import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 
@@ -31,10 +32,15 @@ class _SocialMediaScreenState extends State<SocialMediaScreen>
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
 
+  AnimationController? appBarController;
+  Animation<double>? appbarAnimation;
+
   PostClasses postClasses = PostClasses(
       postBelongs: User.userProfile, postString: 'deneme String Caption');
 
   bool isTopRefresh = false, refreshData = false;
+
+  double scrollOffset = 0.0;
 
   List<Story> storyDeneme = [
     Story(
@@ -75,11 +81,28 @@ class _SocialMediaScreenState extends State<SocialMediaScreen>
             curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
 
     super.initState();
+
+    appBarController =
+        AnimationController(vsync: this, duration: defaultDuration);
+    appbarAnimation =
+        Tween<double>(begin: 0, end: -100).animate(appBarController!);
+
     widget.animationController!.forward();
     scrollController.addListener(scrollEvent);
   }
 
   void scrollEvent() {
+    if (scrollController.position.userScrollDirection ==
+        ScrollDirection.forward) {
+      // Kullanıcı aşağı kaydırıyor
+
+      appBarController!.reverse();
+    } else if (scrollController.position.userScrollDirection ==
+        ScrollDirection.reverse) {
+      // Kullanıcı yukarı kaydırıyor
+      appBarController!.forward();
+    }
+
     if (scrollController.offset >= scrollController.position.maxScrollExtent &&
         !scrollController.position.outOfRange) {
       print('bottom Last Point ');
@@ -144,28 +167,11 @@ class _SocialMediaScreenState extends State<SocialMediaScreen>
                       child: Container(
                         width: double.maxFinite,
                         height: MediaQuery.of(context).size.height,
-                        padding: EdgeInsets.only(
-                          top: getPaddingSreenTopHeight() + AppBar().preferredSize.height,
-                        ),
                         child: ListView(
                           padding:
                               EdgeInsets.only(top: getPaddingSreenTopHeight()),
                           controller: scrollController,
                           children: [
-                            isTopRefresh
-                                ? Container(
-                                    width: double.maxFinite,
-                                    padding: EdgeInsets.symmetric(vertical: 15),
-                                    alignment: Alignment.center,
-                                    child: Container(
-                                      height: 50,
-                                      width: 50,
-                                      child: CircularProgressIndicator(
-                                        color: AppTheme.firstColor,
-                                      ),
-                                    ),
-                                  )
-                                : Container(),
                             refreshData
                                 ? Container()
                                 : StoryLine(
@@ -190,7 +196,30 @@ class _SocialMediaScreenState extends State<SocialMediaScreen>
                   );
                 },
               ),
-              getAppBarUI(),
+              isTopRefresh
+                  ? Container(
+                      width: double.maxFinite,
+                      height: 80,
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                      alignment: Alignment.center,
+                      child: Container(
+                        height: 50,
+                        width: 50,
+                        child: CircularProgressIndicator(
+                          color: AppTheme.firstColor,
+                        ),
+                      ),
+                    )
+                  : Container(),
+              AnimatedBuilder(
+                animation: appBarController!,
+                builder: (BuildContext context, Widget? child) {
+                  return Transform.translate(
+                    offset: Offset(0, appbarAnimation!.value),
+                    child: getAppBarUI(),
+                  );
+                },
+              ),
               SizedBox(
                 height: MediaQuery.of(context).padding.bottom,
               )

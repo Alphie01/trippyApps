@@ -1,8 +1,9 @@
 class Lastscreens {
   static List lastscreens = [];
   void addLastScreen(pageId) {
-    print(lastscreens);
     lastscreens.add(pageId);
+
+    print(lastscreens);
   }
 
   void removeLastscreen() {

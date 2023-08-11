@@ -1,0 +1,4 @@
+class Restaurants {
+
+  Restaurants._();
+}

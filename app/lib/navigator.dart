@@ -243,7 +243,7 @@ class _AppNavigatorScreenState extends State<AppNavigatorScreen>
               bottomNavigationBar: CurvedNavigationBar(
                 index: currIndex,
                 backgroundColor: AppTheme.firstColor.withOpacity(.3),
-                height: MediaQuery.of(context).size.height / 14,
+                height: AppBar().preferredSize.height,
                 color: AppTheme.background,
                 items: <Widget>[
                   FaIcon(
