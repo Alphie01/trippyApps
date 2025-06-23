@@ -1,9 +1,10 @@
 import 'dart:io';
 
+import 'package:trippy_desk_app/constants/theme.dart';
+import 'package:trippy_desk_app/navigator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:trippy_desk_app/deneme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,31 +34,12 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
     return MaterialApp(
       title: 'Flutter UI Templates',
       debugShowCheckedModeBanner: false,
+      color: AppTheme.firstColor,
       theme: ThemeData(
         primarySwatch: Colors.blue,
         platform: TargetPlatform.iOS,
       ),
-
-      //home: WelcomePage(),,
-      home: WelcomeScreen(),
-      /*home: WelcomeScreen(
-          animationController: AnimationController(
-              duration: const Duration(milliseconds: 600), vsync: this)),*/
-      /*home: SocialMediaScreen(
-          animationController: AnimationController(
-              duration: const Duration(milliseconds: 600), vsync: this)),*/
+      home: AppNavigatorScreen(),
     );
-  }
-}
-
-class HexColor extends Color {
-  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
-
-  static int _getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll('#', '');
-    if (hexColor.length == 6) {
-      hexColor = 'FF' + hexColor;
-    }
-    return int.parse(hexColor, radix: 16);
   }
 }

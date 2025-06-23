@@ -1,13 +1,14 @@
 import 'dart:io';
-
-import 'package:TrippyAlpapp/constants/theme.dart';
+import 'package:TrippyAlpapp/core/constants/theme.dart';
 import 'package:TrippyAlpapp/navigator.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+/* import 'package:google_mobile_ads/google_mobile_ads.dart'; */
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  /* MobileAds.instance.initialize(); */
   await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
@@ -24,12 +25,18 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-      statusBarBrightness:
-          !kIsWeb && Platform.isAndroid ? Brightness.dark : Brightness.light,
-      systemNavigationBarColor: Colors.white,
+      statusBarIconBrightness: AppTheme.background == AppBlackTheme.background
+          ? Brightness.dark
+          : Brightness.light,
+      statusBarBrightness: AppTheme.background == AppBlackTheme.background
+          ? Brightness.dark
+          : Brightness.light,
+      systemNavigationBarColor: AppTheme.textColor,
       systemNavigationBarDividerColor: Colors.transparent,
-      systemNavigationBarIconBrightness: Brightness.dark,
+      systemNavigationBarIconBrightness:
+          AppTheme.background == AppBlackTheme.background
+              ? Brightness.dark
+              : Brightness.light,
     ));
     return MaterialApp(
       title: 'Flutter UI Templates',
@@ -39,15 +46,7 @@ class _MyAppState extends State<MyApp> with TickerProviderStateMixin {
         primarySwatch: Colors.blue,
         platform: TargetPlatform.iOS,
       ),
-
-      //home: WelcomePage(),,
       home: AppNavigatorScreen(),
-      /*home: WelcomeScreen(
-          animationController: AnimationController(
-              duration: const Duration(milliseconds: 600), vsync: this)),*/
-      /*home: SocialMediaScreen(
-          animationController: AnimationController(
-              duration: const Duration(milliseconds: 600), vsync: this)),*/
     );
   }
 }

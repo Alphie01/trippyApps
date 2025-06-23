@@ -1,6 +1,5 @@
-import 'package:TrippyAlpapp/constants/sizeConfig.dart';
-import 'package:TrippyAlpapp/constants/theme.dart';
-import 'package:TrippyAlpapp/widgets/app_large_text.dart';
+import 'package:TrippyAlpapp/core/constants/sizeconfig.dart';
+import 'package:TrippyAlpapp/core/constants/theme.dart';
 import 'package:TrippyAlpapp/widgets/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -54,7 +53,7 @@ class _MapsModalPageState extends State<MapsModalPage> {
         height: SizeConfig.screenHeight,
         color: AppTheme.background,
         padding: EdgeInsets.only(
-          top: getPaddingSreenTopHeight(),
+          top: getPaddingScreenTopHeight(),
         ),
         child: Stack(
           children: [
@@ -216,7 +215,7 @@ class _MapsModalPageState extends State<MapsModalPage> {
                         : Container(
                             margin: EdgeInsets.only(
                                 top: paddingHorizontal,
-                                bottom: getPaddingSreenBottomHeight()),
+                                bottom: getPaddingScreenBottomHeight()),
                             child: ListView.builder(
                               shrinkWrap: true,
                               padding: EdgeInsets.zero,

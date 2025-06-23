@@ -1,0 +1,155 @@
+ORTAK BİR ENCRYPTLEME ve DECRYPTLEME Methodu 
+
+1.Kişi 
+    User - (15 Gün - 1 Ay)
+        Kullanıcı Sınıfının Tanımlanması
+
+        Error jsonlarının Hazırlanması
+            * Error Kodu (id) 0 olamaz! id olarak 0 Başarılı Kabul Edilir.
+            * Her errorun farklı unique bir idsi olmak zorunda
+            ÖRN:
+                $ok = array(
+                'id'=> '0',
+                'error_message' => 'Başarı ile Eklendi'
+                );
+                $error_diffrentPassword = array(
+                'id' => 1,
+                'error_message' => 'Şifrelerinizi Kontrol Ediniz. Şifreleriniz Birbirinden Farklı Olamaz!'
+                );
+
+                $error_passwordMust = array(
+                'id' => 2,
+                'error_message' => 'Şifreniz 6 Haneden Düşük Olamaz!'
+                );
+
+                $error_usedMail = array(
+                'id' => 3,
+                'error_message' => 'E-mail Adresiniz Kullanılmakta!'
+                );
+
+                $error_basarisiz = array(
+                'id' => 4,
+                'error_message' => 'Kaydınız Başarısız! Lütfen Tekrar Deneyiniz!'
+                );
+
+        Gerekli Fonksiyonların Tamamlanması
+            - TODO Kullanıcı Oluşturma  ***register***
+                Yeni Kullanıcı Kayıdı 
+                
+                User_database
+                    int? userId; //Kullanıcıya ait unique id (Başka kimsede bulunmayan sistem tarafından otomatik olarak atanan)
+                    String userSecretToken;//Bu Parametre önemlidir. int64 based encryted parameter
+                    String userKAdi; //Kullanıcının belirlediği kendi ismi dışında herkes tarafından görülebilir kullanıcı adı
+                    String userPassword; //Kullanıcının belirlediği şifre (ENCRPTED)
+                    String? userName; //Kullanıcı kullanıcının Real world ismi (Privacy seçeneklerinden istendiği doğrultuda gösterip-gizleme )
+                    String userMail; //Kullanıcının mail adresi
+                    String userGSM; //Kullanıcının Telefon Numarası
+                    int? userPermissionLevel; //Kullanıcının sahip olduğu yetki seviyesi
+                    String? userStartDate; //Kullanıcının kayıt tarihi (Timestamp)
+                    String? userBirthdate; //Kullanıcının Doğum Günü (DateTime)
+
+                
+            
+            - TODO  Kayıtlı Kullanıcıların Login İşlemi 
+                    Kayıtlı kullanıcıların girişi için 2 farklı giriş Methodu
+                        ***login***
+                            *Textfield'a girilen bilgiler gönderilir
+                            *userMail, userGSM, userKAdi ile giriş yapabilir. 
+                            *password eğer giriş bilgileri ile uyuşuyor ise JSON verisi döndürülür.
+                            
+                            {
+                                "id": 0,
+                                "kullanici": {
+                                    "kullanici_id": "1",
+                                    "kullanici_zaman": "2023-08-30 16:15:08",
+                                    "kullanici_resim": null, !! ÖNEMLİ !!
+                                    "kullanici_tc": "111111111111",
+                                    "kullanici_ad": "admin", !! ÖNEMLİ !!
+                                    "kullanici_mail": "alpsel3@gmail.com", !! ÖNEMLİ !!
+                                    "kullanici_gsm": null,
+                                    "kullanici_password": "5f4dcc3b5aa765d61d8327deb882cf99",
+                                    "kullanici_adsoyad": "Alp Selcuk", !! ÖNEMLİ !!
+                                    "kullanici_adres": null,
+                                    "kullanici_il": null,
+                                    "kullanici_ilce": null,
+                                    "kullanici_mail_key": "2491",
+                                    "kullanici_yetki": "0", !! ÖNEMLİ !!
+                                    "kullanici_durum": "1",
+                                    "kullanici_aciklama": null,
+                                    "kullanici_secretToken": "2475c7dbacf79deb8f64894e24d2cb75", !! ÖNEMLİ !!
+                                    "platforms": [
+                                        {
+                                            "kullanici_platformTokens_platformId": "2"
+                                        }
+                                    ]
+                                }
+                            }
+                        ***loginWithSecretToken***
+                            Eğer daha önceden giriş sağlandı ise aşşağıdaki storelanan "kullanici_secretToken" ile giriş yapılmasıdır.
+                                Mobil uygulama (Local Cache)
+                                    
+                                Web (Session)
+
+                                Uygulama (Local Cache)
+
+                                {'loginUserByToken': 'ok', 'userToken': token}
+
+                        ***updateInformations***
+                            Kullancı kendi verilerini updatelemesi için oluşturulacak fonksiyon. 
+                                * kullanici_id, kullanici_mail: hiç kimse tarafından değiştirelemez.
+                                * kullanici_yetki: yetki sahibi bir kişi değiştirilebilir.
+                        ***fetchUsers***
+                            GET => Yönetim paneli için Gerekli!
+
+                        ***fetchUserByID***
+                            GET => "kullanici_id" gönderilir. User kısmı için kullanılır. Eğer dönüt okey ise aşşağıdaki dönütü verir.
+                                {
+                                "id": 0,
+                                "kullanici": {
+                                    "kullanici_id": "1",
+                                    "kullanici_resim": null, !! ÖNEMLİ !!
+                                    "kullanici_ad": "admin", !! ÖNEMLİ !!
+                                    "kullanici_mail": "alpsel3@gmail.com", !! ÖNEMLİ !!
+                                    "kullanici_gsm": null, ?? TARTIŞ
+                                    "kullanici_adsoyad": "Alp Selcuk", !! ÖNEMLİ !!
+                                    
+                                }
+                            }
+        Data Storage
+            IMG - Data From User
+        ??Follow - Following System ? Sosyal Medya Eğer Phase 0'da Yapılacak İse??
+
+
+2.Kişi
+    Busienss 15 Gün
+        Bütün İşletmeler BUSSINESS tabanında genişletilecektir. Busienss Kısımı Önemli!
+            - TODO Alt sınır olarak BUSSINESS parametrelerinin oluşturulması (Database içerisinde bu parmetrelerin oluşturulması)
+            - TODO Bu parametrelerin create, delete, update ve select fonksiyonlarının yazılması
+                - Create : Yeni İşletme Kayıdı
+                - Update : Olan işletmenin 'bussinesId' ile bulunup, işletmenin updatelenmesi gönderilen parametrelerin updatelenmesi
+                - Delete : Olan İşletmenin 'bussinesId' il bulunup, işletmenin silinmesi
+                - Select : Select Fonksiyonu 4 farklı olabilir;
+                    Eğer 'bussinesId' gönderilir ise sadece 'bussinesId'ye sahip işletmenin bastırılması,
+                    Eğer 'bussinesName' gönderilir ise içerisinde 'bussinesName' parametresi altında gönderilen kelime aranır. ( Örn : 'Arda' aranan kelime => Arda Ticaret, Karaca Bardak gibi)
+                    eğer kategori (bussinesMainProducing) gönderildi ise kategoriye uygun bussinesMainProducing'e sahip işletmeler, 
+                    eğer hiçbir bilgi gönderilmediyse son işletmeler
+            - TODO Bu işletmelerin ödeme kayıtları, faturaları, üyelikleri (Ne zaman başladığı, En Son Kullanım Günü?, ), bu üyeliklerin kapsamı (Kapsam kısmı places kısmı bittikten sonra bilerlenecektir.)
+        Restaurant 15 Gün
+        
+
+
+
+3.Kişi
+    Ödeme 1 Ay
+
+
+
+
+Sosyal Medya & Muhasebe - 1
+    
+    Post
+        Video
+        Fotoğraf
+        Fotoğraflar
+
+    

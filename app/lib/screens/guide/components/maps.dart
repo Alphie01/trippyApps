@@ -1,132 +1,111 @@
 import 'dart:async';
-
-import 'package:TrippyAlpapp/constants/sharedPreferencesKeynames.dart';
-import 'package:TrippyAlpapp/constants/sizeConfig.dart';
-import 'package:TrippyAlpapp/constants/theme.dart';
-import 'package:TrippyAlpapp/core/sharedPreferences.dart';
-import 'package:TrippyAlpapp/widgets/app_text.dart';
+import 'dart:math';
+import 'package:TrippyAlpapp/core/classes/permissions.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:TrippyAlpapp/core/classes/bloc/maps_cubit.dart';
+import 'package:TrippyAlpapp/core/classes/maps.dart';
+import 'package:TrippyAlpapp/core/constants/sizeconfig.dart';
+import 'package:TrippyAlpapp/core/constants/theme.dart';
+import 'package:TrippyAlpapp/core/sharedPref/sharedpreferences.dart';
+import 'package:TrippyAlpapp/core/sharedPref/sharedprefkeynames.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'dart:ui' as ui;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:flutter/services.dart' show rootBundle;
 
 class Maps extends StatefulWidget {
-  final LatLng latLng;
+  final LatLng? latLng;
   final bool showSearch;
-  final Function? goBackNavigation;
+  final Function? goBackNavigation, createIstasyonInfoList;
+  final Function(LatLng pos)? setUserLoc;
 
   const Maps(
       {Key? key,
       required this.latLng,
       required this.showSearch,
-      this.goBackNavigation})
+      this.goBackNavigation,
+      this.createIstasyonInfoList,
+      this.setUserLoc})
       : super(key: key);
 
   @override
-  _MapsState createState() => _MapsState();
+  MapsState createState() => MapsState();
 }
 
-class _MapsState extends State<Maps> with TickerProviderStateMixin {
+class MapsState extends State<Maps> with TickerProviderStateMixin {
   Set<Marker> _markers = {};
 
-  MapType _currentMapType = MapType.normal;
-  GoogleMapController? mapController;
+  late GoogleMapController mapController;
   AnimationController? searchField;
   Animation<double>? fieldOpacity, fieldTransform;
   bool fieldSeen = false, onLoadingField = false;
 
-  late CameraPosition _initalCameraPosition;
+  bool fullscreenMap = false;
+
+  Animation<double>? mapAnimation,
+      listAnimation,
+      listOpacity,
+      buttonOpacity,
+      routeOpacity;
+  AnimationController? mapAnimationController,
+      listAnimationController,
+      buttonAnimationController,
+      routeAnimationController;
+
+  // Object for PolylinePoints
+  late PolylinePoints polylinePoints;
+
+// List of coordinates to join
+  List<LatLng> polylineCoordinates = [];
+
+// Map storing polylines created by connecting two points
+  Map<PolylineId, Polyline> polylines = {};
 
   LatLng _location = LatLng(0, 0);
 
-  Location? _currentLocation;
-
-  late Location _locationService;
   BitmapDescriptor bitmapDescriptor = BitmapDescriptor.defaultMarker;
 
-  bool isFetchedCurrentLocation = false;
+  bool isFetchedCurrentLocation = false, isDisplayStations = true;
 
   Position? _currentPosition;
 
   @override
   void initState() {
+    listAnimationController =
+        AnimationController(vsync: this, duration: defaultDuration);
+    listAnimation = Tween<double>(begin: 100, end: SizeConfig.screenHeight / 2)
+        .animate(listAnimationController!);
+    listOpacity =
+        Tween<double>(begin: 0, end: 1).animate(listAnimationController!);
+    buttonAnimationController =
+        AnimationController(vsync: this, duration: defaultDuration);
+    routeAnimationController =
+        AnimationController(vsync: this, duration: defaultDuration);
+    buttonOpacity =
+        Tween<double>(begin: 1, end: 0).animate(buttonAnimationController!);
+    routeOpacity =
+        Tween<double>(begin: 1, end: 0).animate(routeAnimationController!);
     super.initState();
     searchField = AnimationController(vsync: this, duration: defaultDuration);
     fieldOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(searchField!);
     fieldTransform =
         Tween<double>(begin: -150.0, end: 0.0).animate(searchField!);
-    customIcon();
-    _initalCameraPosition = CameraPosition(target: widget.latLng, zoom: 16);
-
-    _currentLocation = Location(
-        latitude: widget.latLng.latitude,
-        longitude: widget.latLng.longitude,
-        timestamp: DateTime.now());
-    getCurrentPosition();
-    startSetInterval(Duration(seconds: 2), () {
-      getCurrentPosition();
-    });
   }
 
-  void addNewMarkers() {
-    _markers.add(
-      Marker(
-        markerId: MarkerId('Sydney'),
-        position: LatLng(40.22553508682186, 28.914500038523727),
-      ),
-    );
-  }
-
-  void startSetInterval(Duration duration, Function function) {
-    /* Timer.periodic(duration, (_) {
-      function();
-    }); */
-  }
-
-  Future<bool> handleLocationPermission() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location services are disabled. Please enable the services')));
-      return false;
-    }
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permissions are denied')));
-        return false;
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text(
-              'Location permissions are permanently denied, we cannot request permissions.')));
-      return false;
-    }
-    return true;
-  }
-
-  void customIcon() async {
-    await BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(12, 12)), 'assets/pin.png')
-        .then((d) {
-      bitmapDescriptor = d;
+  Future<void> createMarkers(Position position) async {
+    Set<Marker> marks = await MapsMarker.createListOfMarker(
+        position.latitude, position.longitude, context);
+    setState(() {
+      _markers = marks;
     });
   }
 
   Future<void> getCurrentPosition() async {
-    final hasPermission = await handleLocationPermission();
+    final hasPermission = await Permissions.handleLocationPermission(context);
 
     if (!hasPermission) return;
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
@@ -134,21 +113,23 @@ class _MapsState extends State<Maps> with TickerProviderStateMixin {
       setState(() {
         _currentPosition = position;
         isFetchedCurrentLocation = true;
-        _initalCameraPosition = CameraPosition(
-            target: LatLng(position.latitude, position.longitude), zoom: 16);
+        createMarkers(position);
+        widget.setUserLoc!(LatLng(position.latitude, position.longitude));
       });
-      print(position);
-      directPosition(position);
+      directPosition(position: position);
+      context.read<CurrentPlacemarkCubit>().getAddressFromLatLng(position);
     }).catchError((e) {
       print(e);
     });
   }
 
-  Future<void> directPosition(Position position) async {
-    await mapController?.animateCamera(
+  Future<void> directPosition(
+      {required Position position, double? zoom}) async {
+    await mapController.animateCamera(
       CameraUpdate.newCameraPosition(
         CameraPosition(
-            target: LatLng(position.latitude, position.longitude), zoom: 16),
+            target: LatLng(position.latitude, position.longitude),
+            zoom: zoom ?? 16),
       ),
     );
   }
@@ -170,35 +151,91 @@ class _MapsState extends State<Maps> with TickerProviderStateMixin {
   }
 
   void _getVisibleRegionCoordinates(CameraPosition position) async {
-    if (mapController == null) {
-      return;
-    }
+    LatLngBounds visibleRegion = await mapController.getVisibleRegion();
+    LatLng northeast = visibleRegion.northeast;
+    LatLng southwest = visibleRegion.southwest;
 
-    if (position.zoom < 15.5) {
-      setState(() {
-        _markers = {};
+    if (northeast.latitude > _currentPosition!.latitude &&
+        _currentPosition!.latitude > southwest.latitude &&
+        northeast.longitude > _currentPosition!.longitude &&
+        _currentPosition!.longitude > southwest.longitude) {
+      searchField!.reverse().then((value) {
+        setState(() {
+          fieldSeen = false;
+        });
       });
     } else {
-      addNewMarkers();
-      LatLngBounds visibleRegion = await mapController!.getVisibleRegion();
-      LatLng northeast = visibleRegion.northeast;
-      LatLng southwest = visibleRegion.southwest;
+      setState(() {
+        fieldSeen = true;
+      });
+      searchField!.forward();
+    }
+  }
 
-      if (northeast.latitude > _currentPosition!.latitude &&
-          _currentPosition!.latitude > southwest.latitude &&
-          northeast.longitude > _currentPosition!.longitude &&
-          _currentPosition!.longitude > southwest.longitude) {
-        searchField!.reverse().then((value) {
-          setState(() {
-            fieldSeen = false;
-          });
-        });
+  void _goCurrentLocation() async {
+    mapController.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        target: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+        zoom: 16.0,
+      ),
+    ));
+  }
+
+  double calculateZoomLevel(
+      LatLng userLocation, LatLng destination, BuildContext context) {
+    double south, west, east, north;
+
+    if (userLocation.latitude <= destination.latitude) {
+      south = userLocation.latitude;
+      north = destination.latitude;
+    } else {
+      south = destination.latitude;
+      north = userLocation.latitude;
+    }
+
+    if (userLocation.longitude <= destination.longitude) {
+      west = userLocation.longitude;
+      east = destination.longitude;
+    } else {
+      west = destination.longitude;
+      east = userLocation.longitude;
+    }
+
+    double width = east - west;
+    double height = north - south;
+
+    Size screenSize = MediaQuery.of(context).size;
+
+    double zoomWidth = _calculateZoom(width, screenSize.width);
+    double zoomHeight = _calculateZoom(height, screenSize.height);
+    return min(zoomWidth, zoomHeight);
+  }
+
+  double _calculateZoom(double dimension, double viewportDimension) {
+    const double worldDimension = 256;
+    int numTiles = (dimension * worldDimension / viewportDimension).ceil();
+    return _log2(worldDimension * 2 / numTiles);
+  }
+
+  double _log2(double x) => log(x) / log(2);
+
+  String rotaSuresi(int? saniye) {
+    if (saniye == null || saniye <= 0) {
+      return "Geçersiz süre";
+    }
+
+    int saat = saniye ~/ 3600;
+    int dakika = (saniye % 3600) ~/ 60;
+    int kalanSaniye = saniye % 60;
+
+    if (saat < 1) {
+      if (dakika < 1) {
+        return '$kalanSaniye saniye';
       } else {
-        setState(() {
-          fieldSeen = true;
-        });
-        searchField!.forward();
+        return '$dakika dakika';
       }
+    } else {
+      return '$saat saat';
     }
   }
 
@@ -209,27 +246,30 @@ class _MapsState extends State<Maps> with TickerProviderStateMixin {
       width: 75,
       height: 75,
       child: CircularProgressIndicator(
-        color: AppTheme.firstColor,
+        color: AppTheme.contrastColor1,
       ),
     ),
   );
 
   @override
   Widget build(BuildContext context) {
-    if (isFetchedCurrentLocation) {
-      return Scaffold(
-        body: Stack(
-          children: <Widget>[
-            GoogleMap(
+    return BlocBuilder<UserPositionCubit, Position?>(
+      builder: (context, positionCubit) {
+        return BlocBuilder<MapsPolylinesCubit, Map<PolylineId, Polyline>>(
+          builder: (context, polygons) {
+            routeAnimationController!.forward().then((value) {
+              isDisplayStations = polygons.isEmpty;
+              routeAnimationController!.reverse();
+            });
+            return GoogleMap(
               onTap: (position) {},
               onCameraMove: (CameraPosition position) {
-                _getVisibleRegionCoordinates(position);
+                /*  _getVisibleRegionCoordinates(position); */
               },
               onMapCreated: (GoogleMapController controller) async {
                 setState(() {
                   mapController = controller;
                 });
-                addNewMarkers();
                 if (SharedPref.getBoolValuesSF(darkOrLightMode)) {
                   rootBundle
                       .loadString('assets/map.json')
@@ -243,12 +283,19 @@ class _MapsState extends State<Maps> with TickerProviderStateMixin {
                     controller.setMapStyle(mapStyle);
                   });
                 }
+                getCurrentPosition();
               },
+              polylines: Set<Polyline>.of(polygons.values),
               markers: _markers,
               mapType: MapType.normal,
-              initialCameraPosition: _initalCameraPosition,
+              initialCameraPosition: CameraPosition(
+                target:
+                    LatLng(positionCubit!.latitude, positionCubit.longitude),
+                zoom: 6,
+              ),
               tiltGesturesEnabled: false,
               compassEnabled: false,
+              myLocationButtonEnabled: false,
               circles: Set.from(
                 [
                   Circle(
@@ -264,56 +311,10 @@ class _MapsState extends State<Maps> with TickerProviderStateMixin {
               myLocationEnabled: true,
               zoomGesturesEnabled: true,
               zoomControlsEnabled: true,
-            ),
-            fieldSeen
-                ? AnimatedBuilder(
-                    animation: searchField!,
-                    builder: (BuildContext context, Widget? child) {
-                      return Opacity(
-                        opacity: fieldOpacity!.value,
-                        child: Transform.translate(
-                          offset: Offset(0, fieldTransform!.value),
-                          child: onLoadingField
-                              ? Container(
-                                  width: double.maxFinite,
-                                  margin: EdgeInsets.only(
-                                      top: getPaddingSreenTopHeight() * 3),
-                                  alignment: Alignment.topCenter,
-                                  child: Container(
-                                    width: 50,
-                                    height: 50,
-                                    child: CircularProgressIndicator(
-                                      color: AppTheme.firstColor,
-                                    ),
-                                  ),
-                                )
-                              : GestureDetector(
-                                  onTap: fetchNewPlaces,
-                                  child: Container(
-                                    width: double.maxFinite,
-                                    margin: EdgeInsets.only(
-                                        top: getPaddingSreenTopHeight() * 3),
-                                    alignment: Alignment.topCenter,
-                                    child: Container(
-                                      padding: EdgeInsets.all(15),
-                                      decoration: BoxDecoration(
-                                          color: AppTheme.background,
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      child: AppText(text: 'Bu Alanda Ara'),
-                                    ),
-                                  ),
-                                ),
-                        ),
-                      );
-                    },
-                  )
-                : Container()
-          ],
-        ),
-      );
-    } else {
-      return emptyBody;
-    }
+            );
+          },
+        );
+      },
+    );
   }
 }
